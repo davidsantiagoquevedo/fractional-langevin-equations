@@ -8,12 +8,13 @@ export make_path, read_hdf5_data, write_data_hdf5
 
 using HDF5
 
-function make_path(h, count, dir = "")
-    path = "$dir"*"fBM-h-$h-$count.hdf5"
+function make_path(h, which, dir = "")
+    path = "$dir"*"fBM-h-$h-$which.hdf5"
     return path
 end
 
-function read_hdf5_data(path, slice = false, len = 10000)
+function read_hdf5_data(h, which, dir = "", slice = false, len = 10000)
+	path = make_path(h, which, dir)
 	file = h5open(path, "r")
 	data = [read(file["values"], "deets_t"), read(file["values"], "deets_v")]
 	if slice
