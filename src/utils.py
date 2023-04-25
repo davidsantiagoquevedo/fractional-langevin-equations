@@ -8,15 +8,16 @@ from tqdm import tqdm
 import pandas as pd
 
 def read_hdf5_data(path):
-    """This function reads hdf5 data generated using the Julia model: fbm-tools and utils.
+    """Read hdf5 structered in columns
     Adapted from:
         https://stackoverflow.com/questions/28170623/how-to-read-hdf5-files-in-python    
         https://stackoverflow.com/questions/65865756/how-extract-data-from-hdf5-in-python
-        
-    Parameters
-    ----------
-    path : str
-        string with the localtion of the files
+  
+    Args:
+        path (str): path to file
+
+    Returns:
+        pandas.DataFrame: column-structured data    
     """
     with h5py.File(path, "r") as f:
         group_key = list(f.keys())[0]
@@ -27,18 +28,16 @@ def read_hdf5_data(path):
     return pd.DataFrame(df)
 
 def read_hdf5_all(h, DATA_PATH, trajectory_i = 1, trajectory_f = 100):
-    """This function reads several hdf5 data files that contains trajectories for certain hurst number
-        
-    Parameters
-    ----------
-    h : float64
-        Hurst number
-    DATA_PATH : str
-        path to folder where the data is storaged
-    trajectory_i : int64 
-        defaul = 1: first trajectory to read
-    trajectory_i : int64 
-        defaul = 100: last trajectory to read
+    """Read several hdf5 files that contain trajectories generated with a hurst number
+    
+    Args:
+        h (float64): Hurst number
+        DATA_PATH (str): path to folder where the data is located
+        trajectory_i (int). Defaults to 1: first trajectory to read
+        trajectory_i (int). Defaults to 100: last trajectory to read
+    
+    Returns:
+        pandas.DataFrame: concat table with multiple trajectories
     """
     dictionary_data = {}
     for tr in tqdm(range(trajectory_i, trajectory_f + 1)):
@@ -49,14 +48,11 @@ def read_hdf5_all(h, DATA_PATH, trajectory_i = 1, trajectory_f = 100):
     return pd.DataFrame(dictionary_data)
 
 def write_hdf5(path, data):
-    """This function writes hdf5 data from pandas dataframes
-        
-    Parameters
-    ----------
-    path : str
-        string with the localtion of the file
-    data : pandas.DataFrame()
-        DataFrame that contains the data - The names of all the columns must be strings!
+    """Write hdf5 data from pandas dataframes
+    
+    Args:
+        path (str): path to new file
+        data (pandas.DataFrame): data table to write. The names of all the columns must be strings!
     """
     try:
         os.remove(path)
