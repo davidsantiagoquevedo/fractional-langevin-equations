@@ -1,5 +1,5 @@
 #= 
-@author: 17thsaint, davidsantiagoquevedo
+@authors: 17thsaint, davidsantiagoquevedo
 Adapted from: https://github.com/17thSaint/finance-thesis
 =#
 

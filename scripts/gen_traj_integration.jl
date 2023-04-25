@@ -1,9 +1,7 @@
-#= Created on Tue Dec 7 2022
+#=
 @author: davidsantiagoquevedo
 Adapted from: https://github.com/17thSaint/finance-thesis
 =#
-
-using HDF5
 
 DATA_PATH = "data/"
 

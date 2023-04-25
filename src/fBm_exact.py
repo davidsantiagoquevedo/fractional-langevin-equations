@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Dec 7 2022
 @author: davidsantiagoquevedo
 """
 from fbm import FBM
