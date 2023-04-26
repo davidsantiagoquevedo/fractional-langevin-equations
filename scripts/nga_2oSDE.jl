@@ -27,7 +27,7 @@ For the Fractional Langevin equations, the first guess is the analytical solutio
 However, for this first benchmark we use x = 0
 
 ARGS
-    time_told (int): 
+    time_told (int): number of points in time to guess
 """
 function get_first_guess(time_told)
 	x0 = [0.0 for _ in 1:time_told]
@@ -39,8 +39,13 @@ end
 Integer order part of the differential equation
 Removed get_scale_inv_vals: Notice that in the original implementation they were returning 1.
 
+ARGS
+	config (array): current state/configuration of the solution. For the langevin equation is the position
+	delta_t (float): delta time to calculate de derivatives
+	noise (array): noise term of the equation
+	noise_steps (int). Defaults to 1: number of noise points asociated to every point in time of the configuration
 """
-function get_goft(config, delta_t, noise, noise_steps)
+function get_goft(config, delta_t, noise, noise_steps = 1)
 	sliced_noise = [noise[i*noise_steps + 1] for i in 1:length(config) -2]
 	velocity = [(config[i+1] - config[i])/delta_t for i in 1:length(config)-1]
 	accel = [(velocity[i+1] - velocity[i])/delta_t for i in 1:length(velocity)-1]
@@ -48,19 +53,51 @@ function get_goft(config, delta_t, noise, noise_steps)
 	return g_of_t, velocity, accel
 end
 
-function get_resids(config,delta_t,noise, noise_steps)
+"""
+	get_resids(config,delta_t,noise, noise_steps)
+Get the residuals between the left-hand side and the right-hand side of the SDE.
+For the fractional Langevin equation it's the residual between the analytically tratable part and the fractional derivative.
+ARGS
+	config (array): current state/configuration of the solution. For the langevin equation is the position
+	delta_t (float): delta time to calculate de derivatives
+	noise (array): noise term of the equation
+	noise_steps (int). Defaults to 1: number of noise points asociated to every point in time of the configuration
+"""
+function get_resids(config,delta_t,noise, noise_steps = 1)
 	g_stuff = get_goft(config, delta_t, noise, noise_steps)
 	steps = length(config)
 	right_hand_side = [0 for _ in 2:steps-1]
 	return abs.(g_stuff[1] - right_hand_side)
 end
 
+"""
+	move_position(num_times, chosen, step_size)
+Suggest a shift matrix to change the configuration at a certain point in time using a random number with a maximum step size
+ARGS
+	config (array): current state/configuration of the solution. For the langevin equation is the position
+	delta_t (float): delta time to calculate de derivatives
+	noise (array): noise term of the equation
+	noise_steps (int). Defaults to 1: number of noise points asociated to every point in time of the configuration
+"""
 function move_position(num_times, chosen, step_size)
-	shift_matrix = [0.0 for i = 1:num_times]
+	shift_matrix = [0.0 for _ = 1:num_times]
 	shift_matrix[chosen] += rand(-1:2:1)*rand(Float64)*step_size
 	return shift_matrix
 end
 
+"""
+	move_position(num_times, chosen, step_size)
+Get the residuals between the left-hand side and the right-hand side of the SDE.
+For the fractional Langevin equation it's the residual between the analytically tratable part and the fractional derivative.
+ARGS
+	num_times (array): lenght of the configuration (solution)
+	chosen (int): point in the solution to shift
+	step_size (array): maximum value to shift
+	delta_t (float): delta time to calculate de derivatives
+	noise (array): noise term of the equation
+	noise_steps (int). Defaults to 1: number of noise points asociated to every point in time of the configuration
+	top_val (float): Maximum value accepted to accept or reject a shift
+"""
 function acc_rej_move(config, num_times, chosen, step_size, delta_t, noise, noise_steps, top_val)
 	start_resids = get_resids(config, delta_t, noise, noise_steps)
 	
@@ -77,6 +114,20 @@ function acc_rej_move(config, num_times, chosen, step_size, delta_t, noise, nois
 	end
 end
 
+"""
+	main_here(tol,steps,step_size, time_told, t_fin, noise, noise_steps, top_val, fixed)
+Run main Monte Carlo loop of the Next guess Algorithm
+ARGS
+	tol (float): tolerance. Maximum value accepted for the residuals
+	steps (int): Monte Carlo steps to run over
+	step_size (array): maximum value to shift when moving
+	time_told (int): lenght of the array containing the solution
+	t_fin (int): lenght of the time interval to solve. Notice that delta_t = time_told/t_fin
+	noise (array): noise term of the equation
+	noise_steps (int). Defaults to 1: number of noise points asociated to every point in time of the configuration
+	top_val (float): Maximum value accepted to accept or reject a shift
+	fixed (float): Fixed initial condition
+"""
 function main_here(tol,steps,step_size, time_told, t_fin, noise, noise_steps, top_val, fixed)
 	# getting first config from first guess
 	running_config = append!([0.0,fixed],get_first_guess(time_told)[3:time_told])
@@ -156,8 +207,8 @@ end
 
 h = 0.5
 
-final_time = 20
-time_steps = 20
+final_time = 30
+time_steps = 30
 noise_steps = 1
 
 noise = get_noise(h, noise_steps*time_steps, final_time, 1, DATA_PATH)
@@ -175,3 +226,5 @@ step_size = 0.001#0.008*final_time/time_steps
 num_soln = main_here(tol, mc_steps, step_size, time_steps, final_time, noise, noise_steps, metro_val, 0)
 
 plot(num_soln[1])
+
+num_soln[]
