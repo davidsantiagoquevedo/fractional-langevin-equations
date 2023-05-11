@@ -7,3 +7,6 @@ nohup.out
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+
+# jupyter notebooks
+*.ipynb
