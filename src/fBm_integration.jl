@@ -4,9 +4,10 @@ Adapted from: https://github.com/17thSaint/finance-thesis
 =#
 
 module fbm_integration
-export frac_brown_wiki2
+export frac_brown_wiki2, get_noise
 
-using Cubature, SpecialFunctions, HypergeometricFunctions
+include("utils.jl")
+using .utils, Cubature, SpecialFunctions, HypergeometricFunctions
 
 function frac_brown_wiki2(h, n, t_fin, print_satus = true)
     #=
@@ -37,4 +38,14 @@ function frac_brown_wiki2(h, n, t_fin, print_satus = true)
 	full_bh = append!([0.0],bh)
 	return times, full_bh
 end
+
+function get_noise(h, N, t_fin, which = rand(1:10), dir ="", make_new = false)
+	fBM = read_hdf5_data(h, which, dir, true, N+1)[2]
+	if make_new
+		fBM = frac_brown_wiki2(h, N, t_fin)[2]
+	end
+
+	return [t_fin*(fBM[i+1] - fBM[i])/N for i in 1:N]
+end
+
 end

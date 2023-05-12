@@ -10,16 +10,6 @@ include("../src/fBm_integration.jl")
 using .utils, .fbm_integration, PyPlot
 pygui(true)
 
-
-function get_noise(h, N, t_fin, which = rand(1:10), dir ="", make_new = false)
-	fBM = read_hdf5_data(h, which, dir, true, N+1)[2]
-	if make_new
-		fBM = frac_brown_wiki2(h, N, t_fin)[2]
-	end
-
-	return [t_fin*(fBM[i+1] - fBM[i])/N for i in 1:N]
-end
-
 """
     get_first_guess(N, delta_t, x0, v0)
 
