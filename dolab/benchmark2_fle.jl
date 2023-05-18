@@ -97,7 +97,7 @@ ARGS
 function residuals(config, delta_t, noise, t_final, fd_order)
 	g_stuff = get_goft(config, delta_t, noise)
     N = length(config)
-    frac_dev = grunwald_letnikov(fd_order, config, t_final)[1:N-2]
+    frac_dev = grunwald_letnikov(fd_order, config, t_final)[3:N]
 
 	return abs.(g_stuff[1] + frac_dev)
 end
@@ -216,11 +216,11 @@ end
 #########################       RUN ALGORITHM       #########################
 ######################### ######################### #########################    
 
-h = 0.7
+h = 0.5
 fd_order = 2 - 2*h
 
-final_time = 30
-N = 90
+final_time = 20
+N = 20
 delta_t = final_time/N
 noise_steps = 1
 x0 = 0
@@ -239,7 +239,7 @@ step_size = 0.001#0.008*final_time/time_steps
 sol = main_here(mc_steps, step_size, N, final_time, noise, error_tol, metro_tol, fg, fd_order)
 
 
-plot(anl[1:N-1], label = "Analytical", marker = "*")
+plot(anl[1:N-1], label = "Analytical", marker =:diamond)
 plot!(fg, label = "First Guess", marker = "*")
 plot!(sol[1][1:N-1], label = "MC - Out", marker = "*", linestyle = :dash)
 png("dolab/fle_h=$h-N$N-anl") 
