@@ -9,4 +9,4 @@ Working repository for the numerical analysis of fractional langevin equations
 
 [Benchmark Next-guess algorithm: 2nd order SDE ](analysis/inspect_benchmark1_2sde.md)
 
-[Benchmark Next-guess algorithm: Fractional Langevin equation - 1 noise ](analysis/inspect_benchmark1_2sde.md)
+[Benchmark Next-guess algorithm: Fractional Langevin equation](analysis/inspect_benchmark2_fle.md)
