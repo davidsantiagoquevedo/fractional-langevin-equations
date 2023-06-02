@@ -7,4 +7,6 @@ Working repository for the numerical analysis of fractional langevin equations
 
 [Benchmark Grunwald-Letnikov derivative](analysis/inspect_fractional_derivatives.md)
 
-[Benchmark Next-guess algorithm 2nd order SDE ](analysis/inspect_benchmark1_2sde.md)
+[Benchmark Next-guess algorithm: 2nd order SDE ](analysis/inspect_benchmark1_2sde.md)
+
+[Benchmark Next-guess algorithm: Fractional Langevin equation - 1 noise ](analysis/inspect_benchmark1_2sde.md)
