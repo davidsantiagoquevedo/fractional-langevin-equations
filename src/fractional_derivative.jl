@@ -5,10 +5,12 @@ using SpecialFunctions
 
 function grunwald_letnikov(order, func, delta_t, factorial_top =  169)
 	N = length(func)
+	if order % 1 == 0
+		order += 0.000001
+	end
 	fract_deriv = [0.0 for _ in 0:N-1]
 	fact_j = [exp(sum([log(i) for i in 1:j])) for j in 0:factorial_top]
 	binom_part_j = gamma(order + 1)*[1/(fact_j[i]*gamma(order + 1 - (i-1))) for i in eachindex(fact_j)]
-	
 	for i in eachindex(fract_deriv) #ith point of the function
 		sum_top = i
 		if sum_top > factorial_top
