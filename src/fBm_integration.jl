@@ -4,10 +4,24 @@ Adapted from: https://github.com/17thSaint/finance-thesis
 =#
 
 module fbm_integration
-export frac_brown_wiki2, get_noise
+export frac_brown_wiki2, get_noise, read_fBm
 
-include("utils.jl")
-using .utils, Cubature, SpecialFunctions, HypergeometricFunctions
+using Cubature, SpecialFunctions, HypergeometricFunctions
+
+function make_path(h, which, dir = "")
+    path = "$dir"*"fBM-h-$h-$which.hdf5"
+    return path
+end
+
+function read_fBm(h, which, dir = "", slice = false, len = 10000)
+	path = make_path(h, which, dir)
+	file = h5open(path, "r")
+	data = [read(file["values"], "deets_t"), read(file["values"], "deets_v")]
+	if slice
+		data = [read(file["values"], "deets_t")[1:len], read(file["values"], "deets_v")[1:len]]
+	end
+	return data
+end
 
 function frac_brown_wiki2(h, n, t_fin, print_satus = true)
     #=
@@ -40,7 +54,7 @@ function frac_brown_wiki2(h, n, t_fin, print_satus = true)
 end
 
 function get_noise(h, N, t_fin, which = rand(1:10), dir ="", make_new = false)
-	fBM = read_hdf5_data(h, which, dir, true, N+1)[2]
+	fBM = read_fBm(h, which, dir, true, N+1)[2]
 	if make_new
 		fBM = frac_brown_wiki2(h, N, t_fin)[2]
 	end
