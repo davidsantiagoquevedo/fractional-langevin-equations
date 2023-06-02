@@ -12,13 +12,13 @@ data_path = "../data/"
 
 # Fractional Langevin equation
 
-Particle accelerated by the effect of a random force and with fractional dissipative term
+Particle accelerated by the effect of a random force and a fractional dissipative term
  
 $$
 M\frac{d^2 q(t)}{dt^2} + M \eta_0 D^{\beta}_t q(t) = \xi(t)
 $$
 
-Computing the Laplace tranform, it is obtained the following set of solutions:
+Using the Laplace tranform, it is obtained the following set of solutions:
 
 $$
 q(t) = \frac{1}{M} [ f(t) \ast t E_{2-\beta, 2}\left( -\eta_0 t^{2-\beta} \right)\\ + Mq'(0) E_{2-\beta, 2}\left( -\eta_0 t^{2-\beta} \right)\\ + Mq(0) E_{2-\beta, 1}\left( -\eta_0 t^{2-\beta} \right)\\ + b_0(t)]
@@ -112,6 +112,11 @@ plot_results(h, times)
 ![png](inspect_benchmark2_fle_files/inspect_benchmark2_fle_7_0.png)
     
 
+
+
+```python
+
+```
 
 h = 4
 
