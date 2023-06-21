@@ -1,5 +1,5 @@
 #Nohup out files
-nohup.out
+nohup*
 
 #VScode files
 *.vscode
@@ -7,9 +7,6 @@ nohup.out
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
-
-# jupyter notebooks
-*.ipynb
 
 # tests folder
 test/
