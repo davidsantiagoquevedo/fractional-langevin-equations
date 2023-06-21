@@ -6,7 +6,7 @@ Adapted from: https://github.com/17thSaint/finance-thesis
 module fbm_integration
 export frac_brown_wiki2, get_noise, read_fBm
 
-using Cubature, SpecialFunctions, HypergeometricFunctions
+using Cubature, SpecialFunctions, HypergeometricFunctions, HDF5
 
 function make_path(h, which, dir = "")
     path = "$dir"*"fBM-h-$h-$which.hdf5"
