@@ -4,6 +4,7 @@ Adapted from: https://github.com/17thSaint/finance-thesis/blob/master/Codes/frac
 =#
 
 DATA_PATH = "data/"
+FIG_PATH = "analysis/inspect_benchmark2_fle_files/"
 
 include("../src/utils.jl")
 include("../src/fBm_integration.jl")
@@ -69,7 +70,7 @@ h = 0.4
 fd_order = 2 - 2*h
 
 final_time = 30
-N = 90
+N = 350
 delta_t = final_time/N
 noise_steps = 1
 x0 = 0
@@ -86,4 +87,4 @@ anl = analytical(times, noise, fd_order, fg[2]/delta_t)
 
 plot(times[1:Int(N*percentage)], sol[1:Int(N*percentage)], label = "MC - Out", marker =:diamond)
 plot!(times[1:Int(N*percentage)], anl[1:Int(N*percentage)], label = "Analytical")
-png("dolab/fle_h=$h-N$N-anl") 
+#png("$FIG_PATH/fle_h=$h-N$N-anl") 

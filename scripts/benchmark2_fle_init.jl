@@ -13,6 +13,9 @@ using .utils, .fbm_integration, .fractional_derivative, Plots, PyCall
 h = parse(Float64,ARGS[1])
 N = parse(Int64,ARGS[2])
 
+println(h)
+println(N)
+
 """
     get_first_guess(times, noise, x0, v0)
 
@@ -138,8 +141,12 @@ function acc_rej_move(config, delta_t, noise, t_final, fd_order, chosen, step_si
     shift_matrix = move_position(N, chosen, step_size)
 	new_resids = residuals(config + shift_matrix, delta_t, noise, t_final, fd_order)
     exp_diff = exp.(new_resids - start_resids)
-	
-    checking = exp_diff[chosen-2] <= metro_tol # The acceptance rule must be evaluated in the position i-2 
+	if chosen == 2
+		pos = 1
+	else
+		pos = 2
+	end
+    checking = exp_diff[chosen-pos] <= metro_tol # The acceptance rule must be evaluated in the position i-2 
 												# because we are adjusting the second order derivative
     if checking
 		return config + shift_matrix, 1
@@ -164,7 +171,7 @@ function main_here(mc_steps, step_size, N, t_fin, noise, error_tol, metro_tol, f
 	end
 
 	# Beginning of Monte Carlo loop
-	num_wrong = [i for i in 3:N] # Assumed initial wrong points - all except for x0 and x1
+	num_wrong = [i for i in 2:N] # Assumed initial wrong points - all except for x0 and x1
 	acc_rate = 0 # Acceptance rate of the Monte Carlo
 	trial_index = 0
 
@@ -218,7 +225,8 @@ end
 ######################### ######################### #########################
 #########################       RUN ALGORITHM       #########################
 ######################### ######################### #########################    
-fd_order = h #2 - 2*h
+
+fd_order = 2 - 2*h
 
 final_time = 30
 delta_t = final_time/N
@@ -229,7 +237,6 @@ noise = get_noise(h, noise_steps*N, final_time, 1, DATA_PATH)
 times = [i*final_time/N for i in 0:N-1]
 
 fg = get_first_guess(times, noise, x0, v0)
-anl = analytical(times, noise, fd_order, fg[2]/delta_t)
 
 error_tol = 0.0001
 mc_steps = 1000000
@@ -237,11 +244,12 @@ metro_tol = 1.000001
 step_size = 0.001#0.008*final_time/time_steps
 
 sol = main_here(mc_steps, step_size, N, final_time, noise, error_tol, metro_tol, fg, fd_order)
+anl = analytical(times, noise, fd_order, sol[2]/delta_t)
 
 plot(times[1:N-1], sol[1][1:N-1], label = "MC - Out", marker =:diamond)
 plot!(times[1:N-1], anl[1:N-1], label = "Analytical")
 #plot!(times, fg, label = "First Guess")
-png("dolab/fle_h=$h-N$N-anl_test_order") 
+png("dolab/fle_h=$h-N$N-anl-test_init") 
 
-write_data_hdf5(DATA_PATH * "fle-h-$h-noise$N-test_order.hdf5", (times, noise))
-write_data_hdf5(DATA_PATH * "fle-h-$h-$N-v0$v0-test_order.hdf5", (times, sol[1]))
+write_data_hdf5(DATA_PATH * "fle-h-$h-noise$N-test_init.hdf5", (times, noise))
+write_data_hdf5(DATA_PATH * "fle-h-$h-$N-v0$v0-test_init.hdf5", (times, sol[1]))
