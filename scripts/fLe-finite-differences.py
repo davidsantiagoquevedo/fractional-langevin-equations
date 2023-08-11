@@ -20,6 +20,8 @@ v0 = 0
 gamma = 1
 eta = 1
 m = 1
+KBT = 1
+
 
 # Analytical solution 
 def solution_fle(t, noise, order, v0):
@@ -73,14 +75,37 @@ def calculate_msd(H, realizations = 100):
     for r in tqdm(range(realizations)):
         t, x_n, anl = solve(H)
         if r == 0:
-            df_msd = pd.DataFrame({"t": t})
+            df_msd = pd.DataFrame({"t": t[:len(t)-1]})
         df_msd["x_"+str(r)] = x_n        
     df_msd.set_index("t", inplace = True)
     msd = fbs.msd(df_msd, False)
     return msd
 
+def analytical_msd_limit(H, t):
+    order = 2 - 2*H
+    gm = scp.gamma(1 + order)
+    return 2*KBT/(m*eta) * (t**order)/gm
+
+def analytical_msd(H, t):
+    order = 2 - 2*H
+    z = -eta*t**(2-order)
+    return 2*KBT/(m*eta) * (t**2) * ml.mittag_leffler_vector(z, 2-order, 3)
+    
+    
 H = 0.51
-msd = calculate_msd(H, 10)
+T = 20
+t = np.arange(0,T,h)
+msd = calculate_msd(H, 20)
+
+H = 0.8
+anl = analytical_msd(H, t)
+anl_lim = analytical_msd_limit(H, t)
+fig, ax = plt.subplots(figsize=(10,10))
+ax.plot(msd.index, msd, label = "numerical")
+ax.plot(t, anl, label = "analytical")
+ax.plot(t, anl_lim, ls = "--", label = "analytical limit")
+ax.legend()
+plt.show()
 
 fig, ax = plt.subplots(2,3, figsize=(15,10), sharex = True)
 H = 0.51
