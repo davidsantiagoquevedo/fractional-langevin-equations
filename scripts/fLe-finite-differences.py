@@ -1,13 +1,15 @@
 from fbm import FBM
 import matplotlib.pyplot as plt
 plt.style.use("src/plot_style.mplstyle")
+import pandas as pd
 import numpy as np
 import scipy.special as scp
-import tqdm as tqdm
+from tqdm import tqdm
 import sys
 sys.path.append("src/")
 import integration as itg
 import mittag_leffler as ml
+import fBm_stats as fbs
 
 T = 10
 h = 0.01
@@ -65,7 +67,20 @@ def plot_results(H, axi, panel, xlabel = False, ylabel = True):
     props = dict(boxstyle='round', facecolor='wheat', alpha=0.3)
     axi.text(0.80, 0.15, f"H = {H}", transform=axi.transAxes, fontsize=14,
         verticalalignment='top', bbox=props)
+    
 
+def calculate_msd(H, realizations = 100):
+    for r in tqdm(range(realizations)):
+        t, x_n, anl = solve(H)
+        if r == 0:
+            df_msd = pd.DataFrame({"t": t})
+        df_msd["x_"+str(r)] = x_n        
+    df_msd.set_index("t", inplace = True)
+    msd = fbs.msd(df_msd, False)
+    return msd
+
+H = 0.51
+msd = calculate_msd(H, 10)
 
 fig, ax = plt.subplots(2,3, figsize=(15,10), sharex = True)
 H = 0.51
