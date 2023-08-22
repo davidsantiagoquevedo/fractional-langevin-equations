@@ -10,3 +10,6 @@ __pycache__/
 
 # tests folder
 test/
+
+# large data files
+*1000.hdf5
