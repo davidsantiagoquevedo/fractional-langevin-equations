@@ -19,7 +19,7 @@ def msd(trajectories, normalize = True):
         msd /= max(msd)
     return msd
 
-def cov(trajectories, t_ref, normalize = True):
+def cov(series, t_ref, normalize = True):
     """Numeric estimation of the covariance with respect to a reference point in time.
 	
 	Args:
@@ -30,10 +30,13 @@ def cov(trajectories, t_ref, normalize = True):
     Returns:
         pandas.Series: covariance with respect to time point t_ref
 	"""
-    Bt_ref = trajectories.iloc[t_ref]
+    #TODO: check this implementation. Currently assuming that E[series(t)] = 0 for every t
+    mean = series.mean(axis = 1)
+    x_ref = series.iloc[t_ref]
+    x_ref_mean = mean.iloc[t_ref]
     df_cov = pd.DataFrame()
-    for i in range(len(Bt_ref)):
-        df_cov[trajectories.columns[i]] = trajectories[trajectories.columns[i]]*Bt_ref[i]
+    for i in range(len(x_ref)):
+        df_cov[series.columns[i]] = series[series.columns[i]]*x_ref[i]
     cov = df_cov.mean(axis = 1)
     if normalize:
         cov /= max(cov)
