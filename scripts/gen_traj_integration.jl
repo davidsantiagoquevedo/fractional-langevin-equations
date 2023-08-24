@@ -3,7 +3,7 @@
 Adapted from: https://github.com/17thSaint/finance-thesis
 =#
 
-DATA_PATH = "data/"
+DATA_PATH = "data_misc/"
 
 include("../src/utils.jl")
 include("../src/fBm_integration.jl")
@@ -16,7 +16,7 @@ trajectory_i = parse(Int64,ARGS[4])
 trajectory_f = parse(Int64,ARGS[5])
 
 for j in trajectory_i:trajectory_f
-    path = make_path(h, j, DATA_PATH)
+    path = "$DATA_PATH"*"fBM-h-$h-$j.hdf5"
 	trajectory = frac_brown_wiki2(h,n,T)
 	write_data_hdf5(path,trajectory)
 end
