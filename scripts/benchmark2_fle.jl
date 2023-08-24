@@ -3,7 +3,7 @@
 Adapted from: https://github.com/17thSaint/finance-thesis/blob/master/Codes/fracworking-lang.jl
 =#
 
-DATA_PATH = "data/"
+DATA_PATH = "data_misc/"
 
 include("../src/utils.jl")
 include("../src/fBm_integration.jl")
@@ -12,6 +12,8 @@ using .utils, .fbm_integration, .fractional_derivative, Plots, PyCall
 
 h = parse(Float64,ARGS[1])
 N = parse(Int64,ARGS[2])
+T = parse(Int64,ARGS[3])
+noise_id = parse(Int64,ARGS[4])
 
 """
     get_first_guess(times, noise, x0, v0)
@@ -176,7 +178,7 @@ function main_here(mc_steps, step_size, N, t_fin, noise, error_tol, metro_tol, f
 		
 		for k in num_wrong[1:upper]
             #acc_rej_move(config, delta_t, noise, t_final, fd_order, chosen, step_size, metro_tol)
-			movement = acc_rej_move(running_config, delta_t, noise, final_time, fd_order, k, step_size, metro_tol)
+			movement = acc_rej_move(running_config, delta_t, noise, t_fin, fd_order, k, step_size, metro_tol)
 			running_config = movement[1]
 			acc_rate += movement[2]
 			trial_index += 1
@@ -201,32 +203,32 @@ function main_here(mc_steps, step_size, N, t_fin, noise, error_tol, metro_tol, f
 
 		# If every time point has residuals less than tolerance then solution is found
 		if all(check_tol)
-			println("Solution Found in $i Steps")
+			println("Job $noise_id: Solution Found in $i Steps")
 			return running_config, time_config, time_resids
 		end
 		
 		# interface data
 		if i%(mc_steps*0.01) == 0
-			println("Running:", " ", 100*i/mc_steps, "%, ", "Acceptance: ", acc_rate, "/", trial_index, ", Number Wrong: ", length(num_wrong))
+			println("Job $noise_id:", " ", 100*i/mc_steps, "%, ", "Acceptance: ", acc_rate, "/", trial_index, ", Number Wrong: ", length(num_wrong))
 		end
 	end
 	
-	println("No Solution")
+	println("Job $noise_id: No Solution")
 	return running_config, time_config, time_resids
 end
 
 ######################### ######################### #########################
 #########################       RUN ALGORITHM       #########################
 ######################### ######################### #########################    
-fd_order = h #2 - 2*h
+fd_order = 2 - 2*h
 
-final_time = 30
-delta_t = final_time/N
+delta_t = T/N
 noise_steps = 1
 x0 = 0
 v0 = 0
-noise = get_noise(h, noise_steps*N, final_time, 1, DATA_PATH)
-times = [i*final_time/N for i in 0:N-1]
+
+noise = get_noise(h, noise_steps*N, T, noise_id, DATA_PATH)
+times = [i*T/N for i in 0:N-1]
 
 fg = get_first_guess(times, noise, x0, v0)
 anl = analytical(times, noise, fd_order, fg[2]/delta_t)
@@ -234,14 +236,21 @@ anl = analytical(times, noise, fd_order, fg[2]/delta_t)
 error_tol = 0.0001
 mc_steps = 1000000
 metro_tol = 1.000001
-step_size = 0.001#0.008*final_time/time_steps
+step_size = 0.001#0.008*T/time_steps
 
-sol = main_here(mc_steps, step_size, N, final_time, noise, error_tol, metro_tol, fg, fd_order)
+println("Running job:$noise_id")
+flush(stdout)
+println("Warm-up run")
+flush(stdout)
+sol = main_here(90, step_size, N, T, noise, error_tol, metro_tol, fg, fd_order)
+println("Sampling run")
+flush(stdout)
+sol = main_here(mc_steps, step_size, N, T, noise, error_tol, metro_tol, fg, fd_order)
 
-plot(times[1:N-1], sol[1][1:N-1], label = "MC - Out", marker =:diamond)
-plot!(times[1:N-1], anl[1:N-1], label = "Analytical")
+#plot(times[1:N-1], sol[1][1:N-1], label = "MC - Out", marker =:diamond)
+#plot!(times[1:N-1], anl[1:N-1], label = "Analytical")
 #plot!(times, fg, label = "First Guess")
-png("dolab/fle_h=$h-N$N-anl_test_order") 
+#png("dolab/fle_h=$h-N$N-anl_test_order") 
 
-write_data_hdf5(DATA_PATH * "fle-h-$h-noise$N-test_order.hdf5", (times, noise))
-write_data_hdf5(DATA_PATH * "fle-h-$h-$N-v0$v0-test_order.hdf5", (times, sol[1]))
+write_data_hdf5(DATA_PATH * "fle-h-$h-noise-$N-$noise_id.hdf5", (times, noise))
+write_data_hdf5(DATA_PATH * "fle-h-$h-$N-$noise_id.hdf5", (times, sol[1]))
