@@ -21,15 +21,15 @@ class fle():
         self.KBT = KBT
         
         H = self.H
-        self.zeta = np.sqrt((2*m*KBT*eta) * gamma(1.5 - H) * gamma(0.5 + H) / (gamma(2*H - 1) * gamma(2 - 2*H)))
-        #self.zeta = 1
+        #self.zeta = np.sqrt((2*m*KBT*eta) * gamma(1.5 - H) * gamma(0.5 + H) / (gamma(2*H - 1) * gamma(2 - 2*H)))
+        self.zeta = 1
         
     def external_B_H(self, B_H, t):
         n = self.n
         T = self.T
           
         self.B_H = B_H
-        self.dB_H = [T*(B_H[i+1] - B_H[i])/n for i in range(0,n)]
+        self.dB_H = [(B_H[i+1] - B_H[i])/(T/n) for i in range(0,n)]
         
         self.t_BH = t
         self.t = self.t_BH[:n]
