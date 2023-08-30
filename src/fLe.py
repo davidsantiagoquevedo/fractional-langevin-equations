@@ -9,7 +9,24 @@ class fle():
     def __init__(self, H):
         self.H = H
     
-    def params(self, T, h = 0.01, v0 = 1, eta = 1, m = 1, KBT = 1):
+    def params(self, T, h = 0.01, v0 = 1, eta = 1, m = 1, KBT = 1, zeta = 1):
+        """
+        Function to set the parameters of the system to solve
+        
+        Options for zeta:
+            zeta = np.sqrt((2*m*KBT*eta) * gamma(1.5 - H) * gamma(0.5 + H) / (gamma(2*H - 1) * gamma(2 - 2*H)))
+            zeta = np.sqrt(2)
+            zeta = np.sqrt(3-2*H)
+
+        Args:
+            T (int): Final time. Upper bound of evaluation.
+            h (float, optional): Size of time step. Defaults to 0.01.
+            v0 (int, optional): Initial velocity of the system. Defaults to 1.
+            eta (int, optional): Damping constant in the Fractional derivative. Defaults to 1.
+            m (int, optional): Mass of the particle coupled to the bath. Defaults to 1.
+            KBT (int, optional): Boltzmann constant and Temperature of the system. Defaults to 1.
+            zeta (int, optional): Amplitud of the noise. Defaults to 1.
+        """
         self.T = T
         self.h = h
         self.n = int(self.T/self.h)
@@ -19,10 +36,7 @@ class fle():
         self.eta = eta
         self.m = m
         self.KBT = KBT
-        
-        H = self.H
-        #self.zeta = np.sqrt((2*m*KBT*eta) * gamma(1.5 - H) * gamma(0.5 + H) / (gamma(2*H - 1) * gamma(2 - 2*H)))
-        self.zeta = 1
+        self.zeta = zeta       
         
     def external_B_H(self, B_H, t):
         n = self.n
