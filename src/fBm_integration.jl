@@ -59,7 +59,7 @@ function get_noise(h, N, t_fin, which = rand(1:10), dir ="", make_new = false)
 		fBM = frac_brown_wiki2(h, N, t_fin)[2]
 	end
 
-	return [t_fin*(fBM[i+1] - fBM[i])/N for i in 1:N]
+	return [(fBM[i+1] - fBM[i])/(t_fin/N) for i in 1:N]
 end
 
 end
