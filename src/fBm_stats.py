@@ -3,6 +3,7 @@
 @author: davidsantiagoquevedo
 """
 import pandas as pd
+import numpy as np
 
 def msd(trajectories, normalize = True):
     """Numeric estimation of the mean square displacement (MSD)
@@ -19,25 +20,29 @@ def msd(trajectories, normalize = True):
         msd /= max(msd)
     return msd
 
-def cov(series, t_ref, normalize = True):
-    """Numeric estimation of the covariance with respect to a reference point in time.
+def cov(series, t_ref, normalize = True, limit = False):
+    """Numeric estimation of the (auto)covariance with respect to a reference point in time.
 	
 	Args:
-	    trajectories (pandas.DataFrame): data table with trajectories
+	    series (pandas.DataFrame): data table with series
 	    t_ref (int): reference time point for the covariance
 	    normalize (boolean). Defaults to True: If True, normalizes the covariance with respect to its maximum value.
+        limit (boolean). Defaults to False: calculate the autocovariance assuming the mean vanishes for every realization of the series,
     
     Returns:
         pandas.Series: covariance with respect to time point t_ref
 	"""
-    #TODO: check this implementation. Currently assuming that E[series(t)] = 0 for every t
-    mean = series.mean(axis = 1)
-    x_ref = series.iloc[t_ref]
-    x_ref_mean = mean.iloc[t_ref]
-    df_cov = pd.DataFrame()
-    for i in range(len(x_ref)):
-        df_cov[series.columns[i]] = series[series.columns[i]]*x_ref[i]
-    cov = df_cov.mean(axis = 1)
+    mean_t = series.mean(axis = 1)
+    mean_tref = mean_t.loc[t_ref]
+
+    X_tref = series.loc[t_ref]
+    X_t_minus_mean = series.apply(lambda x: x - np.array(mean_t))
+    X_tref_minus_mean = X_tref - mean_tref
+
+    autocov = (X_t_minus_mean*X_tref_minus_mean).mean(axis = 1)
+    
+    if limit:
+        autocov = (series*X_tref).mean(axis = 1)
     if normalize:
-        cov /= max(cov)
-    return cov
+        autocov /= max(autocov)
+    return autocov
