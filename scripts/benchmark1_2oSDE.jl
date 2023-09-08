@@ -3,7 +3,8 @@
 Adapted from: https://github.com/17thSaint/finance-thesis/blob/master/Codes/fracworking-lang.jl
 =#
 
-DATA_PATH = "data/"
+DATA_PATH = "data/fbm"
+OUT_PATH = "data/2o_sde/"
 
 include("../src/utils.jl")
 include("../src/fBm_integration.jl")
@@ -206,5 +207,5 @@ v0 = 3
 times = [i*final_time/N for i in 0:N-1]
 
 num_soln = main_here(mc_steps, step_size, N, final_time, noise, error_tol, metro_tol, x0, v0)
-write_data_hdf5(DATA_PATH * "2o_sde-h-0.5-noise$N.hdf5", (times, noise))
-write_data_hdf5(DATA_PATH * "2o_sde-h-0.5-$N-v0$v0.hdf5", (times, num_soln[1]))
+write_data_hdf5(OUT_PATH * "2o_sde-h-0.5-noise$N.hdf5", (times, noise))
+write_data_hdf5(OUT_PATH * "2o_sde-h-0.5-$N-v0$v0.hdf5", (times, num_soln[1]))
