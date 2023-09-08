@@ -1,9 +1,28 @@
 #= 
 @authors: davidsantiagoquevedo, 17thSaint
 Adapted from: https://github.com/17thSaint/finance-thesis/blob/master/Codes/fracworking-lang.jl
+
+This script solves using Monte Carlo method the Fractional Langevin Equation:
+
+d²x/dt² + dx/dt + D^alpha_t x = xi_white + xi_coloured 
+
+* First guess:
+Analytical solution of: d²x/dt² + D^alpha_t x = xi,
+where, xi = xi_white + xi_coloured
+
+x = x0 + v0*t + convolution(xi*t)
+
+* Left-hand side for the residuals:
+g(t) = d²x/dt² + dx/dt - xi = 0
+
+* Right-hand side for the residuals:
+D^alpha_t x
+
+* Residual function:
+d²x/dt² + dx/dt - xi + D^alpha_t x = 0
 =#
 
-DATA_PATH = "data/"
+DATA_PATH = "data/two_baths/"
 
 include("../src/utils.jl")
 include("../src/fBm_integration.jl")
@@ -12,12 +31,14 @@ using .utils, .fbm_integration, .fractional_derivative, Plots, PyCall
 
 h = parse(Float64,ARGS[1])
 N = parse(Int64,ARGS[2])
+T = parse(Int64,ARGS[3])
+noise_id = parse(Int64,ARGS[4])
 
 """
     get_first_guess(times, noise, x0, v0)
 
 First guess of the Monte Carlo Algorithm. 
-Using the analytical solution of the fractional SDE: d^2 x/dt + D^alpha_t x = noise 
+Using the analytical solution of the fractional SDE: d²x/dt²  + D^alpha_t x = noise 
 ====> x = x0 + v0*t + convolution(noise*t)
 
 ARGS
@@ -33,7 +54,7 @@ function get_first_guess(times, noise, order, v0)
 	sys.path.append("src/")
 	import integration as itg
 	import mittag_leffler as ml
-	def solution_fle_white(t, noise, order, v0):
+	def solution_fle(t, noise, order, v0):
 		t__ = np.array(t)
 		noise__ = np.array(noise)
 		def nonlinear_term(t):
@@ -43,7 +64,7 @@ function get_first_guess(times, noise, order, v0)
 		nonlinear = v0 * nonlinear_term(t__)
 		return nonlinear + conv
 	"""
-    sol = py"solution_fle_white"(times, noise, order, v0)
+    sol = py"solution_fle"(times, noise, order, v0)
     return sol
 end
 
@@ -159,7 +180,7 @@ function main_here(mc_steps, step_size, N, t_fin, noise, error_tol, metro_tol, f
 		
 		for k in num_wrong[1:upper]
             #acc_rej_move(config, delta_t, noise, t_final, fd_order, chosen, step_size, metro_tol)
-			movement = acc_rej_move(running_config, delta_t, noise, final_time, fd_order, k, step_size, metro_tol)
+			movement = acc_rej_move(running_config, delta_t, noise, t_fin, fd_order, k, step_size, metro_tol)
 			running_config = movement[1]
 			acc_rate += movement[2]
 			trial_index += 1
@@ -184,18 +205,18 @@ function main_here(mc_steps, step_size, N, t_fin, noise, error_tol, metro_tol, f
 
 		# If every time point has residuals less than tolerance then solution is found
 		if all(check_tol)
-			println("Solution Found in $i Steps")
+			println("Job $noise_id: Solution Found in $i Steps")
 			return running_config, time_config, time_resids
 		end
 		
 		# interface data
 		if i%(mc_steps*0.01) == 0
-			println("Running:", " ", 100*i/mc_steps, "%, ", "Acceptance: ", acc_rate, "/", trial_index, ", Number Wrong: ", length(num_wrong))
+			println("Job $noise_id:", " ", 100*i/mc_steps, "%, ", "Acceptance: ", acc_rate, "/", trial_index, ", Number Wrong: ", length(num_wrong))
 			flush(stdout)
 		end
 	end
 	
-	println("No Solution")
+	println("Job $noise_id: No Solution")
 	return running_config, time_config, time_resids
 end
 
@@ -204,16 +225,23 @@ end
 ######################### ######################### #########################    
 
 fd_order = 2 - 2*h
-final_time = 30
-delta_t = final_time/N
+delta_t = T/N
 noise_steps = 1
 x0 = 0
 v0 = 0
 
-w_noise = get_noise(0.5, noise_steps*N, final_time, 1, DATA_PATH)
-c_noise = get_noise(h, noise_steps*N, final_time, 1, DATA_PATH)
-noise = w_noise - c_noise
-times = [i*final_time/N for i in 0:N-1]
+path_fbm = "$DATA_PATH"*"fBM-h-$h-$noise_id.hdf5"
+path_obm = "$DATA_PATH"*"fBM-h-0.5-$noise_id.hdf5"
+fbm = frac_brown_wiki2(h,N,T)
+obm = frac_brown_wiki2(0.5,N,T)
+write_data_hdf5(path_fbm, fbm)
+write_data_hdf5(path_obm, obm)
+
+w_noise = get_noise(0.5, noise_steps*N, T, noise_id, DATA_PATH)
+c_noise = get_noise(h, noise_steps*N, T, noise_id, DATA_PATH)
+
+noise = w_noise + c_noise
+times = [i*T/N for i in 0:N-1]
 
 fg = get_first_guess(times, noise, x0, v0)
 
@@ -221,16 +249,15 @@ error_tol = 0.0001
 mc_steps = 1000000
 metro_tol = 1.000001
 step_size = 0.001#0.008*final_time/time_steps
+
+println("Running job:$noise_id")
+flush(stdout)
 println("Warm-up run")
 flush(stdout)
-sol = main_here(100, step_size, N, final_time, noise, error_tol, metro_tol, fg, fd_order)
+sol = main_here(10, step_size, N, T, noise, error_tol, metro_tol, fg, fd_order)
 println("Sampling run")
 flush(stdout)
-sol = main_here(mc_steps, step_size, N, final_time, noise, error_tol, metro_tol, fg, fd_order)
-
-plot(times[1:N-1], sol[1][1:N-1], label = "MC - Out", marker =:diamond)
-plot!(times, fg, label = "First Guess")
-png("dolab/two_bath_h=$h-N$N-anl")
+sol = main_here(mc_steps, step_size, N, T, noise, error_tol, metro_tol, fg, fd_order)
 
 write_data_hdf5(DATA_PATH * "two_bath-h-$h-noise$N.hdf5", (times, noise))
 write_data_hdf5(DATA_PATH * "two_bath-h-$h-$N-v0$v0.hdf5", (times, sol[1]))
