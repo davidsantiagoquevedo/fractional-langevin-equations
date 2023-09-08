@@ -3,7 +3,8 @@
 Adapted from: https://github.com/17thSaint/finance-thesis/blob/master/Codes/fracworking-lang.jl
 =#
 
-DATA_PATH = "data_misc/"
+DATA_PATH = "data/fbm/"
+OUT_PATH = "data/fle"
 
 include("../src/utils.jl")
 include("../src/fBm_integration.jl")
@@ -252,5 +253,5 @@ sol = main_here(mc_steps, step_size, N, T, noise, error_tol, metro_tol, fg, fd_o
 #plot!(times, fg, label = "First Guess")
 #png("dolab/fle_h=$h-N$N-anl_test_order") 
 
-write_data_hdf5(DATA_PATH * "fle-h-$h-noise-$N-$noise_id.hdf5", (times, noise))
-write_data_hdf5(DATA_PATH * "fle-h-$h-$N-$noise_id.hdf5", (times, sol[1]))
+write_data_hdf5(OUT_PATH * "fle-h-$h-noise-$N-$noise_id.hdf5", (times, noise))
+write_data_hdf5(OUT_PATH * "fle-h-$h-$N-$noise_id.hdf5", (times, sol[1]))
