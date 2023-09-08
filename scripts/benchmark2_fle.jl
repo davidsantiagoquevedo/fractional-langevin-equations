@@ -4,7 +4,7 @@ Adapted from: https://github.com/17thSaint/finance-thesis/blob/master/Codes/frac
 =#
 
 DATA_PATH = "data/fbm/"
-OUT_PATH = "data/fle"
+OUT_PATH = "data/fle/"
 
 include("../src/utils.jl")
 include("../src/fBm_integration.jl")

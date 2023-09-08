@@ -3,7 +3,7 @@
 Adapted from: https://github.com/17thSaint/finance-thesis
 =#
 
-DATA_PATH = "data_misc/"
+DATA_PATH = "data/fbm/"
 
 include("../src/utils.jl")
 include("../src/fBm_integration.jl")
