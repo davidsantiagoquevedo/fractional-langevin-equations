@@ -237,8 +237,8 @@ obm = frac_brown_wiki2(0.5,N,T)
 write_data_hdf5(path_fbm, fbm)
 write_data_hdf5(path_obm, obm)
 
-w_noise = get_noise(0.5, noise_steps*N, T, noise_id, DATA_PATH)
-c_noise = get_noise(h, noise_steps*N, T, noise_id, DATA_PATH)
+w_noise = get_noise(0.5, noise_steps*N, T, "$N-$noise_id", DATA_PATH)
+c_noise = get_noise(h, noise_steps*N, T, "$N-$noise_id", DATA_PATH)
 
 noise = w_noise + c_noise
 times = [i*T/N for i in 0:N-1]
@@ -259,5 +259,5 @@ println("Sampling run")
 flush(stdout)
 sol = main_here(mc_steps, step_size, N, T, noise, error_tol, metro_tol, fg, fd_order)
 
-write_data_hdf5(DATA_PATH * "two_bath-h-$h-noise$N-$noise_id.hdf5", (times, noise))
-write_data_hdf5(DATA_PATH * "two_bath-h-$h-$N-$noise_id.hdf5", (times, sol[1]))
+write_data_hdf5(DATA_PATH * "two_baths-h-$h-noise$N-$noise_id.hdf5", (times, noise))
+write_data_hdf5(DATA_PATH * "two_baths-h-$h-$N-$noise_id.hdf5", (times, sol[1]))
