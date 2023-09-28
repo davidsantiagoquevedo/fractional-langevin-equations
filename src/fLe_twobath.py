@@ -6,18 +6,21 @@ class fle_twobath():
     def __init__(self, H):
         self.H = H
     
-    def params(self, T, h = 0.01, v0 = 1, A = 1, eta = 1, C = 1, zeta = 1):
+    def params(self, T, h = 0.01, v0 = 1, A = 1, eta = 1, C = 1, theta_H = 1, theta_12 = 1,):
         """
         Function to set the parameters of the system to solve
         
-        Options for zeta:
-            zeta = np.sqrt(3-2*H)
+
 
         Args:
             T (int): Final time. Upper bound of evaluation.
             h (float, optional): Size of time step. Defaults to 0.01.
-            v0 (int, optional): Initial velocity of the system. Defaults to 1.
-            zeta (int, optional): Amplitud of the noise. Defaults to 1.
+            v0 (int, optional): Initial velocity of the system. Defaults to 1.ç
+            A (float, optional): Amplitud of second order derivative. Defaults to 1.
+            eta (float, optional): Amplitud of fractional derivative. Defaults to 1.
+            C (float, optional): Amplitud of first order derivative. Defaults to 1.
+            theta_H (float, optional): Amplitud of first order derivative. Defaults to 1.
+            theta_12 (float, optional): Amplitud of first order derivative. Defaults to 1.
         """
         self.T = T
         self.h = h
@@ -28,7 +31,8 @@ class fle_twobath():
         self.A = A
         self.eta = eta
         self.C = C
-        self.zeta = zeta       
+        self.theta_H = theta_H
+        self.theta_12 = theta_12
         
     def external_B(self, B, t):
         n = self.n
@@ -44,6 +48,8 @@ class fle_twobath():
         n = self.n
         H = self.H
         T = self.T
+        theta_H = self.theta_H
+        theta_12 = self.theta_12
           
         f = FBM(n = n, hurst = H, length = T, method = method)
         self.B_H = f.fbm()
@@ -55,8 +61,8 @@ class fle_twobath():
         
         self.t_BH = f.times()
         self.t = self.t_BH[:self.n]
-        self.B = self.B_12 + self.B_H
-        self.dB = self.dB_12 + self.dB_H
+        self.B = theta_12*self.B_12 + theta_H*self.B_H
+        self.dB = theta_12*self.dB_12 + theta_H*self.dB_H
     
     # Numerical solution
     def a_j(self, j):
@@ -74,7 +80,6 @@ class fle_twobath():
         A = self.A
         eta = self.eta
         C = self.C
-        zeta = self.zeta
          
         a_jj = 0
         if k-1 >= 1:    
