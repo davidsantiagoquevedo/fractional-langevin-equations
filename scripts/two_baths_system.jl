@@ -246,7 +246,7 @@ times = [i*T/N for i in 0:N-1]
 fg = get_first_guess(times, noise, x0, v0)
 
 error_tol = 0.0001
-mc_steps = 1000000
+mc_steps = 10000000
 metro_tol = 1.000001
 step_size = 0.001#0.008*final_time/time_steps
 
