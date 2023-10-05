@@ -86,7 +86,8 @@ class fle_twobath():
             for j in range(1, k):
                 a_jj += self.a_j(j)*(x_n[k-j]+x_n[k-j-1])
         h2Hm = h**(2*H)/((A+h*C)*2*(2*H-1)*gamma(2*H-1))
-        return (A/(A+h*C))*x_n[k-1] + (h*A/(A*h*C))*v0 - eta*h2Hm*a_jj + (h/eta)*B[k]
+        return (A/(A+h*C))*x_n[k-1] + (h*A/(A+h*C))*v0 - eta*h2Hm*a_jj + (h/(A+h*C))*B[k]
+    #TODO: se a_j for negative powers
 
     def solve(self):
         n = self.n
