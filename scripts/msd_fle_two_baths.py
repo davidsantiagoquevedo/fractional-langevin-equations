@@ -9,6 +9,7 @@ sys.path.append("src/")
 from fLe_twobath import fle_twobath
 import fBm_stats as fbs
 import utils as ut
+import datetime
 
 DATA_PATH = "data/two_baths/"
 
@@ -18,6 +19,9 @@ eta = float(sys.argv[3])
 C = float(sys.argv[4])
 theta_12 = float(sys.argv[5])
 theta_H = float(sys.argv[6])
+
+t = datetime.datetime.now()
+print(f"Start task msd-h-{H}-A{A}-eta{eta}-C{C}-t12_{theta_12}-tH{theta_H}: {t.year}/{t.month}/{t.day} {t.hour}:{t.minute}:{t.second}")
 
 T = 20
 h = 0.005
@@ -45,3 +49,5 @@ df_msd = pd.DataFrame(msd(H = H, T = T,
                           realizations = realizations, h = h), columns=["msd"])
 
 ut.write_hdf5(DATA_PATH + f"msd-h-{H}-A{A}-eta{eta}-C{C}-t12_{theta_12}-tH{theta_H}.hdf5", df_msd)
+t = datetime.datetime.now()
+print(f"End task msd-h-{H}-A{A}-eta{eta}-C{C}-t12_{theta_12}-tH{theta_H}: {t.year}/{t.month}/{t.day} {t.hour}:{t.minute}:{t.second}")
