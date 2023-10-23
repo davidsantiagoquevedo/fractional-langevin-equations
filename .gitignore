@@ -13,3 +13,6 @@ test/
 
 # large data files
 *1000.hdf5
+
+# slurm run files
+run*
