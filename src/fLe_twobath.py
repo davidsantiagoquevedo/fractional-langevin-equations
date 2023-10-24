@@ -25,7 +25,7 @@ class fle_twobath():
         self.T = T
         self.h = h
         self.n = int(self.T/self.h)
-        self.x_n = [0]*self.n
+        self.x_n = np.zeros(self.n)
 
         self.v0 = v0
         self.A = A
