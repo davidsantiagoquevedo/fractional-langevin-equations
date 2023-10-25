@@ -50,6 +50,7 @@ class fle_twobath():
         T = self.T
         theta_H = self.theta_H
         theta_12 = self.theta_12
+        np.random.seed()
           
         f = FBM(n = n, hurst = H, length = T, method = method)
         self.B_H = f.fbm()
