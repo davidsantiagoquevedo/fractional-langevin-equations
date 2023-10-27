@@ -16,7 +16,8 @@ warnings.filterwarnings("ignore")
 #UserWarning: Combination of increments n and Hurst value H invalid for Davies-Harte method. Reverting to Hosking method. Occurs when n is small and Hurst is close to 1. 
 #warnings.warn
 
-DATA_PATH = "data/two_baths/"
+#DATA_PATH = "data/two_baths/"
+DATA_PATH = "dolab/"
 
 # Input
 H = float(sys.argv[1])
@@ -30,9 +31,9 @@ theta_H = float(sys.argv[6])
 h = 0.1
 T = 20
 n = int(T/h)
-realizations = 40000
+realizations = 40
 
-save_all = False
+save_all = True
 
 batch_size = 4
 assert(realizations%batch_size == 0)
@@ -102,9 +103,11 @@ if __name__ == '__main__':
     print('Done', flush=True)
 
 if save_all:
+    t_ = np.arange(0, T, h)
     d = dict(enumerate(stored_msd, 1))
     df_msd = pd.DataFrame(d)
     df_msd.columns = "trj_"+ df_msd.columns.astype(str)
+    df_msd["t"] = t_
 else:
     t_ = np.arange(0, T, h)
     df_msd = pd.DataFrame(dict(zip(["t", "msd"], [t_, stored_msd/realizations])))
