@@ -16,3 +16,8 @@ test/
 
 # slurm out file
 *slurm*.out
+
+# run script files
+*run*.sh
+*run*.sbatch
+*run*.srun
