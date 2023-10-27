@@ -16,3 +16,6 @@ test/
 
 # slurm run files
 run*
+
+# slurm out file
+*slurm*.out
