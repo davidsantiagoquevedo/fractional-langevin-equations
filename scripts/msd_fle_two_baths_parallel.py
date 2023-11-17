@@ -17,7 +17,7 @@ warnings.filterwarnings("ignore")
 #warnings.warn
 
 #DATA_PATH = "data/two_baths/"
-DATA_PATH = "dolab/"
+DATA_PATH = "_raw/"
 
 # Input
 H = float(sys.argv[1])
@@ -27,19 +27,23 @@ C = float(sys.argv[4])
 theta_12 = float(sys.argv[5])
 theta_H = float(sys.argv[6])
 
-#Fixed params
-h = 0.1
-T = 20
+h = float(sys.argv[7])
+T = int(sys.argv[8])
 n = int(T/h)
-realizations = 40
+avg = int(sys.argv[9])
+set = str(sys.argv[10])
 
 save_all = True
 
 batch_size = 4
-assert(realizations%batch_size == 0)
+assert(avg%batch_size == 0)
 
+if save_all:
+    prefix = "trj"
+else:
+    prefix = "msd"
 
-task = f"msd-h-{H}-A{A}-eta{eta}-C{C}-t12_{theta_12}-tH{theta_H}"
+task = f"{prefix}-set{set}-avg{avg}-dt{h}-T{T}-A{A}-eta{eta}-C{C}-t12_{theta_12}-tH{theta_H}-H{H}"
 
 t = datetime.datetime.now()
 print(f"Start task {task}: {t.year}/{t.month}/{t.day} {t.hour}:{t.minute}:{t.second}")
@@ -78,14 +82,14 @@ def msd(shared_msd, shape_msd, lock, process, H, T, A, eta, C, theta_12, theta_H
 # protect the entry point
 if __name__ == '__main__':
     if save_all:
-        init_msd = np.zeros((realizations, n), dtype = np.float32)
+        init_msd = np.zeros((avg, n), dtype = np.float32)
     else:
         init_msd = np.zeros(n, dtype = np.float32)
     shared_msd = to_shared_array(init_msd, c.c_float)
     stored_msd = to_numpy_array(shared_msd, init_msd.shape)
     lock = mp.Lock()
     # execute in batches
-    for i in tqdm(range(0, realizations, batch_size)):
+    for i in tqdm(range(0, avg, batch_size)):
         #print(f"Start thread {i}: {t.year}/{t.month}/{t.day} {t.hour}:{t.minute}:{t.second}")
         # execute all tasks in a batch
         processes = [mp.Process(target = msd, 
@@ -110,8 +114,8 @@ if save_all:
     df_msd["t"] = t_
 else:
     t_ = np.arange(0, T, h)
-    df_msd = pd.DataFrame(dict(zip(["t", "msd"], [t_, stored_msd/realizations])))
+    df_msd = pd.DataFrame(dict(zip(["t", "msd"], [t_, stored_msd/avg])))
 
-ut.write_hdf5(DATA_PATH + f"par_dt{h}-T{T}_{task}.hdf5", df_msd)
+ut.write_hdf5(DATA_PATH + f"{task}.hdf5", df_msd)
 t = datetime.datetime.now()
 print(f"End task {task}: {t.year}/{t.month}/{t.day} {t.hour}:{t.minute}:{t.second}") 
