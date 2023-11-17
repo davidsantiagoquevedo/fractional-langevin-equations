@@ -12,6 +12,7 @@ __pycache__/
 test/
 
 # large data files
+_raw/
 *1000.hdf5
 
 # slurm out file
