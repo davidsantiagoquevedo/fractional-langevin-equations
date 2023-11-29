@@ -263,3 +263,56 @@ fig1.tight_layout()
 fig2.tight_layout()
 fig1.savefig("outs/msd-all.png", dpi = 1000)
 fig2.savefig("outs/oscilations-all.png", dpi = 1000)
+
+#### LUTZ
+avg = 4000
+
+task_set = ["001"] 
+A = 1.0
+eta = 1.0
+C = 0.0
+theta_H = 1.0
+theta_12 = 0.0
+x0i = 1
+fig, ax = plt.subplots(1,1, figsize = (5,5))
+
+#TREND
+
+H = 0.50001
+df_msd = get_msd(A, eta, C, theta_12, theta_H, H, avg, h, task_set)
+plot_msd(ax, df_msd, H)
+add_trend(ax, x0 = x0i, xf = 100, func = t2_2H, text = r"", xtext = 0.1, H = H)
+
+H = 0.6
+df_msd = get_msd(A, eta, C, theta_12, theta_H, H, avg, h, task_set)
+plot_msd(ax, df_msd, H)
+add_trend(ax, x0 = x0i, xf = 100, func = t2_2H, text = r"", xtext = 0.1, H = H)
+
+H = 0.7
+df_msd = get_msd(A, eta, C, theta_12, theta_H, H, avg, h, task_set)
+plot_msd(ax, df_msd, H)
+add_trend(ax, x0 = x0i, xf = 100, func = t2_2H, text = r"", xtext = 0.1, H = H)
+
+H = 0.8
+df_msd = get_msd(A, eta, C, theta_12, theta_H, H, avg, h, task_set)
+plot_msd(ax, df_msd, H)
+add_trend(ax, x0 = x0i, xf = 100, func = t2_2H, text = r"", xtext = 0.1, H = H)
+
+H = 0.9
+df_msd = get_msd(A, eta, C, theta_12, theta_H, H, avg, h, task_set)
+plot_msd(ax, df_msd, H)
+add_trend(ax, x0 = x0i, xf = 100, func = t2_2H, text = r"", xtext = 0.1, H = H)
+
+H = 0.99
+df_msd = get_msd(A, eta, C, theta_12, theta_H, H, avg, h, task_set)
+plot_msd(ax, df_msd, H)
+add_trend(ax, x0 = 1, xf = 100, func = t2_2H, text = r"~$t^{2-2H}$", xtext = 30, dy = -0.7, H = H)
+
+ax.set_xscale("log")
+ax.set_yscale("log")
+ax.set_xlim(xmin = h)
+
+ax.legend(loc = "lower center")
+
+add_trend(ax, x0 = h, xf = 1, func = t2, text = "~t²", xtext = 0.1)
+fig.savefig("/outs/msd-lutz.png", dpi = 1000)
