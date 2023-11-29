@@ -315,4 +315,4 @@ ax.set_xlim(xmin = h)
 ax.legend(loc = "lower center")
 
 add_trend(ax, x0 = h, xf = 1, func = t2, text = "~t²", xtext = 0.1)
-fig.savefig("/outs/msd-lutz.png", dpi = 1000)
+fig.savefig("outs/msd-lutz.png", dpi = 1000)
