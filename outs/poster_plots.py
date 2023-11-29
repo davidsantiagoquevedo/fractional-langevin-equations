@@ -174,7 +174,7 @@ add_freq_grid(ax1, 1/np.pi, T)
 
 ax0.set_xlim(xmin = h)
 ax0.legend(loc = "upper left")
-ax1.get_legend.remove()
+ax1.legend().set_visible(False)
 
 fig0.savefig("outs/msd-time-glass.png", dpi = 1000)
 fig1.savefig("outs/oscilations-time-glass.png", dpi = 1000)
