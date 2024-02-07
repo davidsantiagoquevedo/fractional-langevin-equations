@@ -3,26 +3,26 @@
 # default matplotlibrc file: https://matplotlib.org/stable/tutorials/introductory/customizing.html
 
 #Ticks
-xtick.labelsize: 12
-ytick.labelsize: 12
+xtick.labelsize: 15
+ytick.labelsize: 15
 
 xtick.direction: in
 ytick.direction: in
 
 #Axes
-axes.labelsize: 12
-axes.titlesize: 12
+axes.labelsize: 15
+axes.titlesize: 15
 axes.titlelocation: center
 
 #Colors
 axes.prop_cycle: cycler("color", ["#88a0dc", "#9467bd", "#f9d14a", "#c55b51", "#db7429", "#8c564b", "#e377c2", "#0B7285", "#2ca02c", "#d62728", "#d62728"]) 
 
 #Legend
-legend.fontsize: 12
+legend.fontsize: 15
 legend.framealpha:    0.0
 legend.edgecolor:     1.0
 
-font.size:    12.0
+font.size:    15.0
 
 
 #Figure
