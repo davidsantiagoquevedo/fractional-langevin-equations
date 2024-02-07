@@ -14,6 +14,9 @@ axes.labelsize: 12
 axes.titlesize: 12
 axes.titlelocation: center
 
+#Colors
+axes.prop_cycle: cycler("color", ["#88a0dc", "#9467bd", "#f9d14a", "#c55b51", "#db7429", "#8c564b", "#e377c2", "#0B7285", "#2ca02c", "#d62728", "#d62728"]) 
+
 #Legend
 legend.fontsize: 12
 legend.framealpha:    0.0
@@ -23,7 +26,7 @@ font.size:    12.0
 
 
 #Figure
-figure.figsize: 12, 12
+figure.figsize: 5, 5
 figure.autolayout: True
 
 #Saving
