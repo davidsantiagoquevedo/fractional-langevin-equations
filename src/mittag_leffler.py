@@ -76,3 +76,45 @@ def mittag_leffler_stable(z, a):
         else:
             return mittag_leffler_stable(z, a)
     return np.vectorize(_MLf)(z, a)
+
+def prabhakar_mittag_leffler(z, a, b, r, inf = 100):
+    """This function evaluates the Prabhakar Mittag-Leffler function (MFF) of at a real value z
+   
+    Parameters
+    ----------
+    z : float64
+        Evaluation point
+    a : float64
+        a coefficient of the MFF function. Now limited to real values but should admit complex values
+    b : float64
+        b coefficient of the MFF function. Now limited to real values but should admit complex values
+    r : float64
+        b coefficient of the MFF function. Now limited to real values but should admit complex values
+    inf : int64
+        Sufficiently large value for the  summation on the definition (in general 100 is enough to vanis 1/gamma dependency)
+    """
+    s_k = np.zeros(inf)
+    k = np.arange(0, inf, 1, dtype=int)
+    return (z**k/gamma(a*k + b)*(gamma(k+r)/gamma(k+1))).sum()*(1/gamma(r))
+
+def Prabhakar_mittag_leffler(vect, a, b, r, inf = 100):
+    """This function evaluates the Mittag-Leffler function (MFF) in a 1xn numpy array
+    In principle, this is the most computational efficient way of evaluation 
+    (See: https://stackoverflow.com/questions/35215161/most-efficient-way-to-map-function-over-numpy-array)
+    
+    Parameters
+    ----------
+    vect : 1xn numpy array 
+        Evaluation vector
+    a : float64
+        a coefficient of the MFF function. Now limited to real values but should admit complex values
+    b : float64
+        b coefficient of the MFF function. Now limited to real values but should admit complex values
+    r : float64
+        b coefficient of the MFF function. Now limited to real values but should admit complex values
+    inf : int64
+        Sufficiently large value for the  summation on the definition (in general 100 is enough to vanis 1/gamma dependency)
+    """
+    pmtlf = lambda x: prabhakar_mittag_leffler(x, a, b, r, inf)
+    v_pmtlf = np.vectorize(pmtlf)
+    return v_pmtlf(vect)
