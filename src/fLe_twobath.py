@@ -1,6 +1,9 @@
 from fbm import FBM
 import numpy as np
 from scipy.special import gamma
+import pandas as pd
+import integration as itg
+import mittag_leffler as ml
 
 class fle_twobath():
     def __init__(self, H):
@@ -64,6 +67,45 @@ class fle_twobath():
         self.t = self.t_BH[:self.n]
         self.B = theta_12*self.B_12 + theta_H*self.B_H
         self.dB = theta_12*self.dB_12 + theta_H*self.dB_H
+        
+    def get_analytical(self):
+        H = self.H
+        eta_H = self.eta
+        M = self.A
+        eta_12 = self.C      
+        t = self.t
+        noise = self.dB
+        v0 =self.v0
+                
+        t__ = np.array(t)
+        noise__ = np.array(noise)
+        
+        def relaxation_function(t):            
+            order = 2 - 2*H
+            z = -(eta_H/M)*t**(2-order)
+            G = pd.DataFrame()
+            inf = 10
+            for n in range(inf):
+                G[f"n{n}"] = ml.Prabhakar_mittag_leffler(z, 2-order, 2, n+1) * t * ((-eta_12/M)**n)
+            
+            return np.array(G.sum(axis = 1))
+        
+        def relaxation_function_(t):            
+            order = 2 - 2*H
+            z = -(eta_H/M)*t
+            G = pd.DataFrame()
+            inf = 40
+            for n in range(inf):
+                t_ = ((-eta_12/M)**n)*t**((2-order)*n+1)
+                G[f"n{n}"] = ml.Prabhakar_mittag_leffler(z, 1 , (2-order)* n + 2, n+1) * t_ 
+            
+            return np.array(G.sum(axis = 1))
+        
+        conv = itg.convolution(relaxation_function_, noise__, t__)
+        
+        nonlinear = v0 * relaxation_function_(t__)
+        
+        self.analytical = nonlinear + (1/M) * conv
     
     # Numerical solution
     def a_j(self, j):
