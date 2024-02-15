@@ -68,7 +68,7 @@ class fle_twobath():
         self.B = theta_12*self.B_12 + theta_H*self.B_H
         self.dB = theta_12*self.dB_12 + theta_H*self.dB_H
         
-    def get_analytical(self):
+    def get_analytical(self, relaxation_type = 2):
         H = self.H
         eta_H = self.eta
         M = self.A
@@ -80,17 +80,17 @@ class fle_twobath():
         t__ = np.array(t)
         noise__ = np.array(noise)
         
-        def relaxation_function(t):            
+        def relaxation_function1(t):            
             order = 2 - 2*H
             z = -(eta_H/M)*t**(2-order)
             G = pd.DataFrame()
-            inf = 10
+            inf = 40
             for n in range(inf):
-                G[f"n{n}"] = ml.Prabhakar_mittag_leffler(z, 2-order, 2, n+1) * t * ((-eta_12/M)**n)
+                G[f"n{n}"] = ml.Prabhakar_mittag_leffler(z, 2-order, 2 + n, n+1) * (t**(1+n)) * ((-eta_12/M)**n)
             
             return np.array(G.sum(axis = 1))
         
-        def relaxation_function_(t):            
+        def relaxation_function2(t):            
             order = 2 - 2*H
             z = -(eta_H/M)*t
             G = pd.DataFrame()
@@ -101,9 +101,14 @@ class fle_twobath():
             
             return np.array(G.sum(axis = 1))
         
-        conv = itg.convolution(relaxation_function_, noise__, t__)
+        if relaxation_type == 1:
+            relaxation_function = relaxation_function1
+        if relaxation_type == 2:
+            relaxation_function = relaxation_function2
         
-        nonlinear = v0 * relaxation_function_(t__)
+        conv = itg.convolution(relaxation_function, noise__, t__)
+        
+        nonlinear = v0 * relaxation_function(t__)
         
         self.analytical = nonlinear + (1/M) * conv
     
