@@ -78,7 +78,7 @@ class fle():
         
         def nonlinear_term(t):
             z = -eta*t**(2-order)
-            return t * ml.mittag_leffler_vector(z, 2-order, 2)
+            return t * ml.mittag_leffler(z, 2-order, 2)
         
         conv = itg.convolution(nonlinear_term, noise__, t__)
         
@@ -133,7 +133,7 @@ class fle():
         order = 2 - 2*H
         #*gamma(1-order)
         z = -eta*t**(2-order)
-        self.msd_analytical = 2*KBT/(m) * (t**2) * ml.mittag_leffler_vector(z, 2-order, 3)
+        self.msd_analytical = 2*KBT/(m) * (t**2) * ml.mittag_leffler(z, 2-order, 3)
         
     def get_msd_analytical_limit(self):
         H = self.H

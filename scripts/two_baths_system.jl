@@ -59,7 +59,7 @@ function get_first_guess(times, noise, order, v0)
 		noise__ = np.array(noise)
 		def nonlinear_term(t):
 			z = -t**(2-order)
-			return t * ml.mittag_leffler_vector(z, 2-order, 2)
+			return t * ml.mittag_leffler(z, 2-order, 2)
 		conv = itg.convolution(nonlinear_term, noise__, t__)
 		nonlinear = v0 * nonlinear_term(t__)
 		return nonlinear + conv

@@ -86,7 +86,7 @@ class fle_twobath():
             G = pd.DataFrame()
             inf = 40
             for n in range(inf):
-                G[f"n{n}"] = ml.Prabhakar_mittag_leffler(z, 2-order, 2 + n, n+1) * (t**(1+n)) * ((-eta_12/M)**n)
+                G[f"n{n}"] = ml.prabhakar_mittag_leffler(z, 2-order, 2 + n, n+1) * (t**(1+n)) * ((-eta_12/M)**n)
             
             return np.array(G.sum(axis = 1))
         
@@ -97,7 +97,7 @@ class fle_twobath():
             inf = 40
             for n in range(inf):
                 t_ = ((-eta_12/M)**n)*t**((2-order)*n+1)
-                G[f"n{n}"] = ml.Prabhakar_mittag_leffler(z, 1 , (2-order)* n + 2, n+1) * t_ 
+                G[f"n{n}"] = ml.prabhakar_mittag_leffler(z, 1 , (2-order)* n + 2, n+1) * t_ 
             
             return np.array(G.sum(axis = 1))
         
