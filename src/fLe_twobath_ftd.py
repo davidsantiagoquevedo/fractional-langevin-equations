@@ -43,7 +43,7 @@ class fle_twobath():
             kBT = self.kBT
             H = self.H
             
-            self.theta_12 = np.sqrt(2*kBT*eta_12)*theta_12
+            self.theta_12 = np.sqrt(kBT*eta_12)*theta_12
             self.theta_H = np.sqrt(kBT*eta_H/(H*(2*H-1)*gamma(2*H-1)))*theta_H
         
     def external_B(self, B, t):
