@@ -43,7 +43,7 @@ class fle_twobath():
             kBT = self.kBT
             H = self.H
             
-            self.theta_12 = np.sqrt(kBT*eta_12)*theta_12
+            self.theta_12 = np.sqrt(2*kBT*eta_12)*theta_12
             self.theta_H = np.sqrt(kBT*eta_H/(H*(2*H-1)*gamma(2*H-1)))*theta_H
         
     def external_B(self, B, t):
@@ -77,7 +77,7 @@ class fle_twobath():
         self.B = theta_12*self.B_12 + theta_H*self.B_H
         self.dB = theta_12*self.dB_12 + theta_H*self.dB_H
         
-    def get_analytical(self, relaxation_type = 2):
+    def get_analytical(self, relaxation_type = "sub"):
         H = self.H
         eta_H = self.eta_H
         M = self.M
@@ -89,31 +89,32 @@ class fle_twobath():
         t__ = np.array(t)
         noise__ = np.array(noise)
         
-        def relaxation_function1(t):            
+        def relaxation_function_sup(t):            
             order = 2 - 2*H
             z = -(eta_H/M)*t**(2-order)
             G = pd.DataFrame()
             inf = 40
             for n in range(inf):
-                G[f"n{n}"] = ml.prabhakar_mittag_leffler(z, 2-order, 2 + n, n+1) * (t**(1+n)) * ((-eta_12/M)**n)
+                t_ = (t**(1+n)) * ((-eta_12/M)**n)
+                G[f"n{n}"] = ml.prabhakar_mittag_leffler(z, 2-order, 2 + n, n+1) * t_
             
             return np.array(G.sum(axis = 1))
         
-        def relaxation_function2(t):            
+        def relaxation_function_sub(t):            
             order = 2 - 2*H
-            z = -(eta_H/M)*t
+            z = -(eta_12/M)*t
             G = pd.DataFrame()
             inf = 40
             for n in range(inf):
-                t_ = ((-eta_12/M)**n)*t**((2-order)*n+1)
+                t_ = ((-eta_H/M)**n)*t**((2-order)*n+1)
                 G[f"n{n}"] = ml.prabhakar_mittag_leffler(z, 1 , (2-order)* n + 2, n+1) * t_ 
             
             return np.array(G.sum(axis = 1))
         
-        if relaxation_type == 1:
-            relaxation_function = relaxation_function1
-        if relaxation_type == 2:
-            relaxation_function = relaxation_function2
+        if relaxation_type == "sub":
+            relaxation_function = relaxation_function_sub
+        if relaxation_type == "sup":
+            relaxation_function = relaxation_function_sup
         
         conv = itg.convolution(relaxation_function, noise__, t__)
         
