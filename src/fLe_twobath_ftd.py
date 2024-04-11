@@ -5,6 +5,14 @@ import pandas as pd
 import integration as itg
 import mittag_leffler as ml
 
+# This script uses the old definition of constants
+# Now for a more general description we use
+## alpha instead of H
+## A -> M
+## eta -> zeta
+## C -> gamma
+## theta_H -> A_H (depends on the physical constants and the model)
+## theta_12 -> A (depends on the physical constants and the model)
 class fle_twobath():
     def __init__(self, H):
         self.H = H
