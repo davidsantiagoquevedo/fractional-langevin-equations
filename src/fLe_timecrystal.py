@@ -61,7 +61,7 @@ class fle():
         # Amplitudes for stochastic process
         H = self.H
         self.A = self.theta_1
-        self.A_H = self.theta_2/(H*(2*H-1)*gamma(2*H-1))
+        self.A_H = self.theta_2/np.sqrt(H*(2*H-1)*gamma(2*H-1))
         
     def external_B(self, B, t):
         n = self.n
@@ -172,11 +172,11 @@ class fle():
         def msd(t):
             z = -(gmma/M)*t
             G = pd.DataFrame()
-            inf = 40
+            inf = 70
             for n in range(inf):
                 t_ = (t**((2-alpha)*n+2)) * ((-zeta/M)**n)
-                G[f"n{n}"] = ml.Prabhakar_mittag_leffler(z, 1, (2-alpha)*n + 3, n+1) * t_
+                G[f"n{n}"] = ml.prabhakar_mittag_leffler(z, 1, (2-alpha)*n + 3, n+1) * t_
             
             return np.array(G.sum(axis = 1))
-        return 2*kBT/M*msd(t)
+        self.analytical_msd = 2*kBT/M*msd(t)
 
