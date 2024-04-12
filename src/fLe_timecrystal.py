@@ -29,34 +29,45 @@ class fle():
         self.h = h
         self.n = int(self.T/self.h)
         self.x_n = np.zeros(self.n)
-
-        self.v0 = v0
+                
         self.M = M
         self.eta_1 = eta_1
         self.eta_2 = eta_2
         self.T1 = T1
         self.T2 = T2
+        
         if self.linear:
             kB = self.kB
-            
             self.gamma = eta_1
             self.zeta = eta_2
                         
             self.theta_1 = np.sqrt(2*kB*T2*eta_1)
             self.theta_2 = np.sqrt(kB*T2*eta_2)
-            
         else:
             kB = self.kB
-            
             self.gamma = 0
             self.zeta = eta_1 + eta_2
-            
             alpha = self.alpha
-            self.t_alpha = (M/eta_1)^(1/(2-alpha))
+            if eta_1 != 0:
+                self.t_alpha = (M/eta_1)^(1/(2-alpha))
+            else:
+                self.t_alpha = 1
             t_alpha = self.t_alpha
-            
             self.theta_1 = np.sqrt(2*kB*T1*eta_1*t_alpha)
             self.theta_2 = np.sqrt(kB*T2*eta_2)
+            
+        if v0 == 0: #static
+            self.v0 = v0
+            self.v02 = 0
+        
+        elif v0 == 1: #thermal
+            self.v0 = 0
+            if eta_1 == 0:
+                self.v02 = self.kB*T2/M
+            if eta_2 == 0:
+                self.v02 = self.kB*T1/M
+            else:
+                self.v02 = self.kB/M*(T1+T2)/2
             
         # Amplitudes for stochastic process
         H = self.H
@@ -154,7 +165,6 @@ class fle():
         
         conv = itg.convolution(relaxation_function, noise__, t__)
         linear_v0 = v0 * relaxation_function(t__)
-        
         self.analytical = linear_v0 + (1/M) * conv
         
     def get_analytical_msd(self):
@@ -176,7 +186,47 @@ class fle():
             for n in range(inf):
                 t_ = (t**((2-alpha)*n+2)) * ((-zeta/M)**n)
                 G[f"n{n}"] = ml.prabhakar_mittag_leffler(z, 1, (2-alpha)*n + 3, n+1) * t_
-            
             return np.array(G.sum(axis = 1))
+        
         self.analytical_msd = 2*kBT/M*msd(t)
-
+        
+    def relaxation_non_linear(self):
+        alpha = self.alpha
+        zeta = self.zeta
+        M = self.M
+        
+        t = self.t
+        dB = self.dB
+        
+        def relaxation_function(t):
+            z = (-zeta / M) * t**(2 - alpha)
+            return t * ml.mittag_leffler(z, 2 - alpha, 2)
+        
+        self.G = relaxation_function(t)
+        self.G_conv_dB = itg.convolution(relaxation_function, dB, t)
+    
+    def get_analytical_colored(self):
+        assert(self.eta_1 == 0 and self.linear == False)
+        
+        M = self.M
+        v0 = self.v0
+        
+        self.relaxation_non_linear()
+        self.analytical = v0*self.G +  (1/M) * self.G_conv_dB
+        
+    def get_analytical_colored_msd(self):
+        assert(self.eta_1 == 0 and self.linear == False)
+        
+        alpha = self.alpha
+        
+        zeta = self.zeta
+        M = self.M
+        T2 = self.T2
+        v02 = self.v02
+        kBT = self.kB*T2
+        
+        t = self.t
+        self.relaxation_non_linear()
+        G2 = self.G*self.G
+        z = -(zeta/M)*t**(2-alpha)
+        self.analytical_colored_msd = v02 * G2 + 2*kBT/(M) * ((t**2) * ml.mittag_leffler(z, 2-alpha, 3) - 1/2*G2)
