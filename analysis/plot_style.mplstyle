@@ -14,7 +14,7 @@ axes.labelsize: 15
 axes.titlesize: 15
 axes.titlelocation: center
 
-axes.spines.right = True
+axes.spines.right: True
 
 #Colors
 axes.prop_cycle: cycler("color", ["#88a0dc", "#9467bd", "#f9d14a", "#c55b51", "#db7429", "#8c564b", "#e377c2", "#0B7285", "#2ca02c", "#d62728", "#d62728"]) 
