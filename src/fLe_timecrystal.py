@@ -157,7 +157,7 @@ class fle():
         
         self.analytical = linear_v0 + (1/M) * conv
         
-    def get_msd_analytical(self):
+    def get_analytical_msd(self):
         alpha = self.alpha
         t = self.t
         
