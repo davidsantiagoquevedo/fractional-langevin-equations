@@ -49,7 +49,7 @@ class fle():
             self.zeta = eta_1 + eta_2
             alpha = self.alpha
             if eta_1 != 0:
-                self.t_alpha = (M/eta_1)^(1/(2-alpha))
+                self.t_alpha = (M/eta_1)**(1/(2-alpha))
             else:
                 self.t_alpha = 1
             t_alpha = self.t_alpha
@@ -138,21 +138,16 @@ class fle():
         
         self.numerical = x_n
         
-        
-    def get_analytical(self):
+    #analytical solutions
+    def relaxation_linear(self):
         alpha = self.alpha
-        
-        M = self.M
-        gmma = self.gamma
         zeta = self.zeta
+        gmma = self.gamma
+        M = self.M
         
         t = self.t
-        noise = self.dB
-        v0 =self.v0
-                
-        t__ = np.array(t)
-        noise__ = np.array(noise)
-                
+        dB = self.dB
+        
         def relaxation_function(t):
             inf = 40
             z = -(gmma/M)*t
@@ -162,10 +157,17 @@ class fle():
                 G[f"n{n}"] = ml.prabhakar_mittag_leffler(z, 1 , (2-alpha)* n + 2, n+1) * t_ 
             
             return np.array(G.sum(axis = 1))
+                
+        self.G = relaxation_function(t)
+        self.G_conv_dB = itg.convolution(relaxation_function, dB, t)
         
-        conv = itg.convolution(relaxation_function, noise__, t__)
-        linear_v0 = v0 * relaxation_function(t__)
-        self.analytical = linear_v0 + (1/M) * conv
+    def get_analytical(self):
+        assert(self.eta_1 != 0 and self.eta_2 != 0 and self.linear == True)
+        M = self.M
+        v0 = self.v0
+        
+        self.relaxation_linear()
+        self.analytical = v0*self.G +  (1/M) * self.G_conv_dB
         
     def get_analytical_msd(self):
         alpha = self.alpha
@@ -177,9 +179,10 @@ class fle():
         T1 = self.T1
         T2 = self.T2
         assert(T1==T2)
+        v02 = self.v02
         kBT = self.kB*T2
                              
-        def msd(t):
+        def int_G(t):
             z = -(gmma/M)*t
             G = pd.DataFrame()
             inf = 70
@@ -188,7 +191,9 @@ class fle():
                 G[f"n{n}"] = ml.prabhakar_mittag_leffler(z, 1, (2-alpha)*n + 3, n+1) * t_
             return np.array(G.sum(axis = 1))
         
-        self.analytical_msd = 2*kBT/M*msd(t)
+        self.relaxation_linear()
+        G2 = self.G*self.G
+        self.analytical_msd = v02 * G2 + 2*kBT/M*(int_G(t) - (1/2)*G2)
         
     def relaxation_non_linear(self):
         alpha = self.alpha
@@ -229,4 +234,4 @@ class fle():
         self.relaxation_non_linear()
         G2 = self.G*self.G
         z = -(zeta/M)*t**(2-alpha)
-        self.analytical_colored_msd = v02 * G2 + 2*kBT/(M) * ((t**2) * ml.mittag_leffler(z, 2-alpha, 3) - 1/2*G2)
+        self.analytical_colored_msd = v02 * G2 + 2*kBT/M * ((t**2) * ml.mittag_leffler(z, 2-alpha, 3) - 1/2*G2)
