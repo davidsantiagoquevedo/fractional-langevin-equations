@@ -6,7 +6,7 @@ import integration as itg
 import mittag_leffler as ml
 
 class fle():
-    def __init__(self, alpha, linear = True):
+    def __init__(self, alpha, linear = 1):
         self.alpha = alpha
         self.H = (2-alpha)/2
         self.linear = linear
@@ -36,7 +36,7 @@ class fle():
         self.T1 = T1
         self.T2 = T2
         
-        if self.linear:
+        if self.linear == 1:
             kB = self.kB
             self.gamma = eta_1
             self.zeta = eta_2
@@ -162,7 +162,7 @@ class fle():
         self.G_conv_dB = itg.convolution(relaxation_function, dB, t)
         
     def get_analytical(self):
-        assert(self.eta_1 != 0 and self.eta_2 != 0 and self.linear == True)
+        assert(self.eta_1 != 0 and self.eta_2 != 0 and self.linear == 1)
         M = self.M
         v0 = self.v0
         
@@ -211,7 +211,7 @@ class fle():
         self.G_conv_dB = itg.convolution(relaxation_function, dB, t)
     
     def get_analytical_colored(self):
-        assert(self.eta_1 == 0 and self.linear == False)
+        assert(self.eta_1 == 0 and self.linear == 0)
         
         M = self.M
         v0 = self.v0
@@ -220,7 +220,7 @@ class fle():
         self.analytical = v0*self.G +  (1/M) * self.G_conv_dB
         
     def get_analytical_colored_msd(self):
-        assert(self.eta_1 == 0 and self.linear == False)
+        assert(self.eta_1 == 0 and self.linear == 0)
         
         alpha = self.alpha
         
