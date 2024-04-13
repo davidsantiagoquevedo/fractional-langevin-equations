@@ -20,6 +20,5 @@ data/fbm/*
 *slurm*.out
 
 # run script files
-*run*.sh
 *run*.sbatch
 *run*.srun
