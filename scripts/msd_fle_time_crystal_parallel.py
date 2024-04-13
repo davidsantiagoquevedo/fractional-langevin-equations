@@ -20,7 +20,7 @@ DATA_PATH = "_raw/time_crystal/"
 
 # Input
 alpha = float(sys.argv[1])
-linear = sys.argv[2]
+linear = int(sys.argv[2])
 M = float(sys.argv[3])
 v0 = float(sys.argv[4])
 eta_1 = float(sys.argv[5])
