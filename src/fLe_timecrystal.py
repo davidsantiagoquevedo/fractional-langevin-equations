@@ -234,4 +234,4 @@ class fle():
         self.relaxation_non_linear()
         G2 = self.G*self.G
         z = -(zeta/M)*t**(2-alpha)
-        self.analytical_colored_msd = v02 * G2 + 2*kBT/M * ((t**2) * ml.mittag_leffler(z, 2-alpha, 3) - 1/2*G2)
+        self.analytical_msd = v02 * G2 + 2*kBT/M * ((t**2) * ml.mittag_leffler(z, 2-alpha, 3) - 1/2*G2)
