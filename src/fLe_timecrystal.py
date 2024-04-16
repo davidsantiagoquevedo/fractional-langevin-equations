@@ -61,7 +61,7 @@ class fle():
             self.v02 = 0
         
         elif v0 == 1: #thermal
-            self.v0 = 0
+            self.v0 = v0
             if eta_1 == 0:
                 self.v02 = self.kB*T2/M
             if eta_2 == 0:
