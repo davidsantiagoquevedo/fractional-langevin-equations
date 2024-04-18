@@ -6,7 +6,8 @@ from fLe_timecrystal import fle
 
 import numpy as np
 import pandas as pd
-
+from scipy import fftpack
+from scipy.signal import find_peaks
 import matplotlib.ticker as tck
 
 def plot_position(eq, 
@@ -111,7 +112,7 @@ def talpha(t, **kwargs):
     alpha = kwargs["alpha"]
     return t**alpha
 
-def add_freq_grid(ax, freq, T, times = 8):
+def add_perio_grid(ax, freq, T, times = 8):
     t = 1/freq
     while t <= T:
         ax.axvline(x = t, color = "black", alpha = 0.3, ls = ":")
@@ -124,10 +125,51 @@ def add_freq_grid(ax, freq, T, times = 8):
     yfmt = tck.FuncFormatter(numfmt)
     ax.xaxis.set_major_formatter(yfmt)
     ax.xaxis.set_major_locator(tck.MultipleLocator(base = times*np.pi))
+    
+    
+def get_ft(eq, avg, task_set, data_path):
+    numeric = numeric_msd(eq, avg, task_set, data_path)
+    h = eq.h
+    T = eq.T
+    Fs = 1/h #sampling rate
+    n = int(T/h) #number of observations
+    
+    df_fft = pd.DataFrame()
+    df_fft["fft"] = fftpack.fft(np.array(numeric.msd))
+    df_fft["A"] = df_fft["fft"].abs()
+    df_fft["fr"] = Fs/n * np.linspace(0,n,int(n))
+    
+    return df_fft
 
-def add_2pi(ax, freq=1/np.pi, T = 7):
-    t = 1/freq
-    while t <= T:
-        ax.axvline(x = t, color = "black", alpha = 0.3, ls = ":")
-        t += 1/freq
-    ax.text(2/freq, .5, "2$\pi$")
+def get_freq(ft, q_thr = 0.975, half = True):
+    if half:
+        N = int(len(ft)/2)
+    else:
+        N = len(ft)
+    x = ft[:N].A
+    threshold = x.quantile(q_thr)
+    peaks, _ = find_peaks(x, height = threshold)
+    
+    return ft.iloc[peaks].sort_values(by = "A", ascending = False)
+
+def plot_fft(ax, ft, half = True):
+    if half:
+        N = int(len(ft)/2)
+    else:
+        N = len(ft)
+    ft[:N].set_index("fr")["A"].plot(ax = ax, 
+        ls = "-", marker = "", label = "")
+    ax.legend()
+    ax.set_ylabel("")
+    ax.set_xlabel("")
+    
+def add_1_npi(ax, n = 1):
+    if n == 1:
+        label = r"$\frac{1}{\pi}$"
+        pos = 0.45
+    if n == 2:
+        label = r"$\frac{1}{2\pi}$"
+        pos = 0.17
+    ax.axvline(x = 1/(n*np.pi), color = "black", alpha = 0.3, ls = ":")
+    ax.text(pos, 0.1, label, transform=ax.transAxes)
+    
