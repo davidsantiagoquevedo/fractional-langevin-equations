@@ -44,7 +44,7 @@ if save_all:
 else:
     prefix = "msd"
 
-task = f"{prefix}-set{set}-avg{avg}-dt{h}-T{T}-linear{linear}-eta1{eta_1}-eta2{eta_2}-T1{T1}-T2{T2}-v0{v0}_M{M}-alpha{alpha}"
+task = f"{prefix}-set{set}-avg{avg}-dt{h}-T{T}-linear{linear}-eta1{eta_1}-eta2{eta_2}-T1{T1}-T2{T2}-v0{v0}-M{M}-alpha{alpha}"
 
 t = datetime.datetime.now()
 print(f"Start task {task}: {t.year}/{t.month}/{t.day} {t.hour}:{t.minute}:{t.second}")
