@@ -206,6 +206,12 @@ pu.add_caption_letter(axi, "(c)")
 fig.legend(handles, labels, bbox_to_anchor = (0.9, 1.1), ncol = 7)
 fig.tight_layout()
 
+<<<<<<< HEAD
 fig.savefig("outs/fig2_.png", dpi = 200)
 fig.savefig("outs/fig2_500dpi_.png", dpi = 500)
 fig.savefig("outs/fig2_1000dpi_.png", dpi = 1000)
+=======
+fig.savefig("/outs/fig2.png", dpi = 200)
+fig.savefig("/outs/fig2_500dpi.png", dpi = 500)
+fig.savefig("/outs/fig2_1000dpi.png", dpi = 1000)
+>>>>>>> 144fd2ae127f7b90b38638e4ab671a3b3a7e4fd1
