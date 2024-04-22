@@ -8,7 +8,7 @@ from fLe_timecrystal import fle
 import plot_utils as pu
 from plot import *
 
-plt.style.use("plot_style.mplstyle")
+plt.style.use("analysis/plot_style.mplstyle")
 data_path = "_raw/time_crystal/"
 colors = plt.rcParams["axes.prop_cycle"].by_key()["color"]
 fig, ax = plt.subplots(1,3, figsize=(15, 5), sharex = True, sharey = True);
@@ -36,7 +36,7 @@ axins_ = axi.inset_axes([0.1, 0.7, 0.27, 0.27])
 
 T = 100
 h = 0.05
-v0 = 1.0
+v0 = 0.0
 M = 1.0
 eta_1 = 0.0
 eta_2 = 1.0
@@ -97,7 +97,7 @@ axins_ = axi.inset_axes([0.1, 0.7, 0.27, 0.27])
 
 T = 100
 h = 0.05
-v0 = 1.0
+v0 = 0.0
 M = 1.0
 eta_1 = 1.0
 eta_2 = 0.0
@@ -153,7 +153,7 @@ axins_ = axi.inset_axes([0.1, 0.7, 0.27, 0.27])
 
 T = 100
 h = 0.05
-v0 = 1.0
+v0 = 0.0
 M = 1.0
 eta_1 = 1.0
 eta_2 = 1.0
