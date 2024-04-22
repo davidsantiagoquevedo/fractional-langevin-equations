@@ -177,7 +177,7 @@ for i, a in enumerate(tqdm(alpha)):
     df_freq = get_freq(df_ft)
     
 add_1_npi(axins_, n = 3)
-add_1_npi(axins_, n = 2)
+#add_1_npi(axins_, n = 2)
 resize_names(axins)
 resize_names(axins_)
 add_axislabel_ins(axins_, axi)
