@@ -170,6 +170,10 @@ def add_1_npi(ax, n = 1):
     if n == 2:
         label = r"$\frac{1}{2\pi}$"
         pos = 0.17
+    if n == 3:
+        n = np.sqrt(2)
+        label = r"$\frac{\sqrt(2)}{2\pi}$"
+        pos = 0.25
     ax.axvline(x = 1/(n*np.pi), color = "black", alpha = 0.3, ls = ":")
     ax.text(pos, 0.1, label, transform=ax.transAxes)
     
