@@ -43,7 +43,7 @@ def numeric_msd(eq, avg, task_set, data_path):
     linear = eq.linear
     
     for i, tk in enumerate(task_set):
-        f = f"trj-set{tk}-avg{avg}-dt{h}-T{T}-linear{linear}-eta1{eta_1}-eta2{eta_2}-T1{T1}-T2{T2}-v0{v0}_M{M}-alpha{alpha}"
+        f = f"trj-set{tk}-avg{avg}-dt{h}-T{T}-linear{linear}-eta1{eta_1}-eta2{eta_2}-T1{T1}-T2{T2}-v0{v0}-M{M}-alpha{alpha}"
         if i == 0:
             df_trj = ut.read_hdf5_data(data_path + f + ".hdf5")
             df_trj = df_trj.set_index("t")
