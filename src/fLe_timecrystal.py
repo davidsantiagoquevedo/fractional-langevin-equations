@@ -11,14 +11,16 @@ class fle():
         self.H = (2-alpha)/2
         self.linear = linear
     
-    def params(self, T, h = 0.01, v0 = 0, M = 1, eta_1 = 1, eta_2 = 1, T1 = 1, T2 = 1):
+    def params(self, T, h = 0.01, v0 = 1, M = 1, eta_1 = 1, eta_2 = 1, T1 = 1, T2 = 1):
         """
         Function to set the parameters of the system to solve
         
         Args:
             T (int): Final time. Upper bound of evaluation.
             h (float, optional): Size of time step. Defaults to 0.01.
-            v0 (int, optional): Initial velocity of the system. Defaults to 0.
+            v0 (int, optional): Initial velocity of the system. Defaults to 1.
+                1 = thermal
+                0 = static
             eta_1 (float, optional): Damping of the first bath (white). Defaults to 1.
             eta_2 (float, optional): Damping of the second bath (colored). Defaults to 1.
             T1 (float, optional): Damping of the first bath (white). Defaults to 1.
@@ -49,11 +51,13 @@ class fle():
             self.zeta = eta_1 + eta_2
             alpha = self.alpha
             if eta_1 != 0:
-                self.t_alpha = (M/eta_1)**(1/(2-alpha))
+                t_alpha = (M/eta_1)**(1/(2-alpha))
             else:
-                self.t_alpha = 1
-            t_alpha = self.t_alpha
-            self.theta_1 = np.sqrt(2*kB*T1*eta_1*t_alpha)
+                t_alpha = 1
+                
+            T1_t = T1*t_alpha*np.sin(alpha*np.pi/2)
+            
+            self.theta_1 = np.sqrt(2*kB*T1_t*eta_1)
             self.theta_2 = np.sqrt(kB*T2*eta_2)
             
         if v0 == 0: #static
@@ -61,13 +65,19 @@ class fle():
             self.v02 = 0
         
         elif v0 == 1: #thermal
-            self.v0 = v0
-            if eta_1 == 0:
-                self.v02 = self.kB*T2/M
-            if eta_2 == 0:
-                self.v02 = self.kB*T1/M
+            if self.linear == 1:
+                assert T1 == T2
+                T_eq = T2
+                self.v02 = self.kB*T_eq/M
             else:
-                self.v02 = self.kB/M*(T1+T2)/2
+                if eta_2 == 0:
+                    self.v02 = self.kB*T1_t/M
+                else:
+                    T_eq = T2
+                    self.v02 = self.kB*T_eq
+            
+            self.v0 = np.sqrt(self.v02)
+            
             
         # Amplitudes for stochastic process
         H = self.H
