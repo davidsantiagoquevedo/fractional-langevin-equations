@@ -152,13 +152,13 @@ def get_freq(ft, q_thr = 0.975, half = True):
     
     return ft.iloc[peaks].sort_values(by = "A", ascending = False)
 
-def plot_fft(ax, ft, half = True):
+def plot_fft(ax, ft, color, half = True):
     if half:
         N = int(len(ft)/2)
     else:
         N = len(ft)
     ft[:N].set_index("fr")["A"].plot(ax = ax, 
-        ls = "-", marker = "", label = "")
+        ls = "-", marker = "", label = "", color = color)
     ax.legend()
     ax.set_ylabel("")
     ax.set_xlabel("")
