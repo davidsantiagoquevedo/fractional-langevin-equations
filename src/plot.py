@@ -32,7 +32,7 @@ def plot_position(eq,
 def numeric_msd(eq, avg, task_set, data_path):
     T = eq.T
     h = eq.h
-    v0 = eq.v0
+    v0 = eq.v0_in
     M = eq.M
     eta_1 = eq.eta_1
     eta_2 = eq.eta_2
