@@ -49,7 +49,7 @@ for a in alpha:
             v0 = v0, M = M,
             eta_1 = eta_1, eta_2 = eta_2,
             T1 = T1, T2 = T2)
-    plot(axi, eq, avg, task, data_path)
+    plot(axi, eq, avg, task, data_path, trunc = 20)
     
 #Time glass
 T = 20
@@ -70,7 +70,7 @@ for a in alpha:
             v0 = v0, M = M,
             eta_1 = eta_1, eta_2 = eta_2,
             T1 = T1, T2 = T2)
-    plot(axi, eq, avg, task, data_path)
+    plot(axi, eq, avg, task, data_path, trunc = 20)
     
 #Mixed phase
 T = 20
@@ -91,7 +91,7 @@ for a in alpha:
             v0 = v0, M = M,
             eta_1 = eta_1, eta_2 = eta_2,
             T1 = T1, T2 = T2)
-    plot(axi, eq, avg, task, data_path)
+    plot(axi, eq, avg, task, data_path, trunc = 20)
     
 fig.tight_layout()
 fig.savefig("outs/fig2_check.png", dpi = 200)
