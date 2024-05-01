@@ -20,7 +20,7 @@ def plot(ax, eq, avg, task_set, data_path, trunc):
     eq_.msd_non_linear()
     ax.plot(numeric.t, numeric.msd, label = r"$\alpha$ = "+str(eq.alpha))
     ax.plot(eq_.t, eq_.msd, label = "", color = "black", ls = ":")
-    ax.set_xlim(min = eq.h)
+    ax.set_xlim(xmin = eq.h)
     ax.legend()
     
 fig, ax = plt.subplots(1,3, figsize = (15,5))
