@@ -27,11 +27,11 @@ fig, ax = plt.subplots(1,3, figsize = (15,5))
 alpha = [0.05, 0.07, 0.09, 0.1]
 
 avg = 4000
-task = "001"
+task_set = ["001"]
 data_path = "_raw/time_crystal/"
 
 #Time crystal
-T = 20
+T = 100
 h = 0.05
 v0 = 1.0
 M = 1.0
@@ -39,7 +39,6 @@ eta_1 = 0.0
 eta_2 = 1.0
 T1 = 0.0
 T2 = 1.0
-a = 0.1
 linear = 0
 axi = ax[0]
 for a in alpha:
@@ -49,10 +48,10 @@ for a in alpha:
             v0 = v0, M = M,
             eta_1 = eta_1, eta_2 = eta_2,
             T1 = T1, T2 = T2)
-    plot(axi, eq, avg, task, data_path, trunc = 20)
+    plot(axi, eq, avg, task_set, data_path, trunc = 20)
     
 #Time glass
-T = 20
+T = 100
 h = 0.05
 v0 = 0.0
 M = 1.0
@@ -60,7 +59,6 @@ eta_1 = 1.0
 eta_2 = 0.0
 T1 = 1.0
 T2 = 0.0
-a = 0.1
 linear = 0
 axi = ax[1]
 for a in alpha:
@@ -70,10 +68,10 @@ for a in alpha:
             v0 = v0, M = M,
             eta_1 = eta_1, eta_2 = eta_2,
             T1 = T1, T2 = T2)
-    plot(axi, eq, avg, task, data_path, trunc = 20)
+    plot(axi, eq, avg, task_set, data_path, trunc = 20)
     
 #Mixed phase
-T = 20
+T = 100
 h = 0.05
 v0 = 1.0
 M = 1.0
@@ -81,7 +79,6 @@ eta_1 = 1.0
 eta_2 = 1.0
 T1 = 1.0
 T2 = 1.0
-a = 0.1
 linear = 0
 axi = ax[2]
 for a in alpha:
@@ -91,7 +88,7 @@ for a in alpha:
             v0 = v0, M = M,
             eta_1 = eta_1, eta_2 = eta_2,
             T1 = T1, T2 = T2)
-    plot(axi, eq, avg, task, data_path, trunc = 20)
+    plot(axi, eq, avg, task_set, data_path, trunc = 20)
     
 fig.tight_layout()
 fig.savefig("outs/fig2_check.png", dpi = 200)
