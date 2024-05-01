@@ -38,6 +38,8 @@ class fle():
         self.T1 = T1
         self.T2 = T2
         
+        self.v0_in = v0
+        
         if self.linear == 1:
             kB = self.kB
             self.gamma = eta_1
