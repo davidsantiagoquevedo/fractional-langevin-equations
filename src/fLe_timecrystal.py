@@ -57,7 +57,8 @@ class fle():
             else:
                 t_alpha = 1
                 
-            T1_t = T1*t_alpha*np.sin(alpha*np.pi/2)
+            self.T1_t = T1*t_alpha*np.sin(alpha*np.pi/2)
+            T1_t = self.T1_t
             
             self.theta_1 = np.sqrt(2*kB*T1_t*eta_1)
             self.theta_2 = np.sqrt(kB*T2*eta_2)
@@ -73,6 +74,7 @@ class fle():
                 self.v02 = self.kB*T_eq/M
             else:
                 if eta_2 == 0:
+                    T1_t = self.T1_t
                     self.v02 = self.kB*T1_t/M
                 else:
                     T_eq = T2
@@ -80,6 +82,7 @@ class fle():
             
             self.v0 = np.sqrt(self.v02)
             
+                    
             
         # Amplitudes for stochastic process
         H = self.H
@@ -160,7 +163,7 @@ class fle():
         t = self.t
         dB = self.dB
         
-        def relaxation_function(t):
+        def G(t):
             inf = 40
             z = -(gmma/M)*t
             G = pd.DataFrame()
@@ -170,10 +173,10 @@ class fle():
             
             return np.array(G.sum(axis = 1))
                 
-        self.G = relaxation_function(t)
-        self.G_conv_dB = itg.convolution(relaxation_function, dB, t)
+        self.G = G(t)
+        self.G_conv_dB = itg.convolution(G, dB, t)
         
-    def get_analytical(self):
+    def analytical_linear(self):
         assert(self.eta_1 != 0 and self.eta_2 != 0 and self.linear == 1)
         M = self.M
         v0 = self.v0
@@ -181,7 +184,8 @@ class fle():
         self.relaxation_linear()
         self.analytical = v0*self.G +  (1/M) * self.G_conv_dB
         
-    def get_analytical_msd(self):
+    def msd_linear(self):
+        assert self.linear == 1
         alpha = self.alpha
         t = self.t
         
@@ -205,7 +209,7 @@ class fle():
         
         self.relaxation_linear()
         G2 = self.G*self.G
-        self.analytical_msd = v02 * G2 + 2*kBT/M*(int_G(t) - (1/2)*G2)
+        self.msd = v02 * G2 + 2*kBT/M*(int_G(t) - (1/2)*G2)
         
     def relaxation_non_linear(self):
         alpha = self.alpha
@@ -215,14 +219,14 @@ class fle():
         t = self.t
         dB = self.dB
         
-        def relaxation_function(t):
+        def G(t):
             z = (-zeta / M) * t**(2 - alpha)
             return t * ml.mittag_leffler(z, 2 - alpha, 2)
         
-        self.G = relaxation_function(t)
-        self.G_conv_dB = itg.convolution(relaxation_function, dB, t)
+        self.G = G(t)
+        self.G_conv_dB = itg.convolution(G, dB, t)
     
-    def get_analytical_colored(self):
+    def analytical_non_linear(self):
         assert(self.eta_1 == 0 and self.linear == 0)
         
         M = self.M
@@ -231,7 +235,35 @@ class fle():
         self.relaxation_non_linear()
         self.analytical = v0*self.G +  (1/M) * self.G_conv_dB
         
-    def get_analytical_colored_msd(self):
+    def msd_non_linear(self):
+        alpha = self.alpha
+        
+        zeta = self.zeta
+        M = self.M
+        eta1 = self.eta_1
+        
+        T1_t = self.T1_t
+        T2 = self.T2
+        
+        v02 = self.v02
+        kBT1 = self.kB*T1_t
+        kBT2 = self.kB*T2
+        
+        t = self.t
+        one = np.ones(len(t))
+        
+        def G2_(t):
+            z = (-zeta / M) * t**(2 - alpha)
+            return (t * ml.mittag_leffler(z, 2 - alpha, 2))**2
+        
+        int_G2 = itg.convolution(G2_, one, t)
+        
+        self.relaxation_non_linear()
+        G2 = self.G*self.G
+        z = -(zeta/M)*t**(2-alpha)
+        self.msd = v02 * G2 + 2*kBT1*eta1*int_G2/(M**2) + 2*kBT2/M * ((t**2) * ml.mittag_leffler(z, 2-alpha, 3) - 1/2*G2)
+        
+    def msd_colored(self):
         assert(self.eta_1 == 0 and self.linear == 0)
         
         alpha = self.alpha
@@ -246,4 +278,4 @@ class fle():
         self.relaxation_non_linear()
         G2 = self.G*self.G
         z = -(zeta/M)*t**(2-alpha)
-        self.analytical_msd = v02 * G2 + 2*kBT/M * ((t**2) * ml.mittag_leffler(z, 2-alpha, 3) - 1/2*G2)
+        self.msd = v02 * G2 + 2*kBT/M * ((t**2) * ml.mittag_leffler(z, 2-alpha, 3) - 1/2*G2)
