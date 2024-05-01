@@ -1,9 +1,9 @@
 import sys
 import matplotlib.pyplot as plt
-plt.style.use("plot_style.mplstyle")
+plt.style.use("analysis/plot_style.mplstyle")
 import numpy as np
 
-sys.path.append("../src/")
+sys.path.append("src/")
 from fLe_timecrystal import *
 import plot as pt
 
