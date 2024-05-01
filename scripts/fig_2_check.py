@@ -53,7 +53,7 @@ for a in alpha:
 #Time glass
 T = 100
 h = 0.05
-v0 = 0.0
+v0 = 1.0
 M = 1.0
 eta_1 = 1.0
 eta_2 = 0.0
