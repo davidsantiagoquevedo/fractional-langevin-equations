@@ -44,8 +44,9 @@ class fle():
             kB = self.kB
             self.gamma = eta_1
             self.zeta = eta_2
-                        
-            self.theta_1 = np.sqrt(2*kB*T2*eta_1)
+            
+            assert T1 == T2      
+            self.theta_1 = np.sqrt(2*kB*T1*eta_1)
             self.theta_2 = np.sqrt(kB*T2*eta_2)
         else:
             kB = self.kB
@@ -78,7 +79,7 @@ class fle():
                     self.v02 = self.kB*T1_t/M
                 else:
                     T_eq = T2
-                    self.v02 = self.kB*T_eq
+                    self.v02 = self.kB*T_eq/M
             
             self.v0 = np.sqrt(self.v02)
             
