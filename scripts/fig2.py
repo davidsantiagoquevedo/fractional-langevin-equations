@@ -15,7 +15,7 @@ fig, ax = plt.subplots(1,3, figsize=(15, 5), sharex = True, sharey = True);
 avg = 4000
 task_set = ["001", "002", "003", "004"]
 
-alpha = [0.01, 0.03, 0.05, 0.07, 0.09, 0.1]
+alpha = [0.05, 0.07, 0.09, 0.1]
 
 def resize_names(ax, size = 10):
     ax.xaxis.label.set_size(size)
@@ -36,7 +36,7 @@ axins_ = axi.inset_axes([0.1, 0.7, 0.27, 0.27])
 
 T = 100
 h = 0.05
-v0 = 0.0
+v0 = 1.0
 M = 1.0
 eta_1 = 0.0
 eta_2 = 1.0
@@ -56,7 +56,7 @@ for i, a in enumerate(tqdm(alpha)):
              ax = axins, color_fd = colors[9 - i], legend_main = False, truncate = 25)
     
     df_ft = get_ft(eq, avg, task_set, data_path)
-    plot_fft(axins_, df_ft, half = True)
+    plot_fft(axins_, df_ft, color = colors[9 - i], half = True)
     df_freq = get_freq(df_ft)
     
 add_1_npi(axins_, n = 1)
@@ -97,7 +97,7 @@ axins_ = axi.inset_axes([0.1, 0.7, 0.27, 0.27])
 
 T = 100
 h = 0.05
-v0 = 0.0
+v0 = 1.0
 M = 1.0
 eta_1 = 1.0
 eta_2 = 0.0
@@ -117,7 +117,7 @@ for i, a in enumerate(tqdm(alpha)):
              ax = axins, color_fd = colors[9 - i], legend_main = False, truncate = 25)
     
     df_ft = get_ft(eq, avg, task_set, data_path)
-    plot_fft(axins_, df_ft, half = True)
+    plot_fft(axins_, df_ft, color = colors[9 - i], half = True)
     df_freq = get_freq(df_ft)
     
 add_1_npi(axins_, n = 1)
@@ -153,7 +153,7 @@ axins_ = axi.inset_axes([0.1, 0.7, 0.27, 0.27])
 
 T = 100
 h = 0.05
-v0 = 0.0
+v0 = 1.0
 M = 1.0
 eta_1 = 1.0
 eta_2 = 1.0
@@ -173,7 +173,7 @@ for i, a in enumerate(tqdm(alpha)):
              ax = axins, color_fd = colors[9 - i], legend_main = False, truncate = 25)
     
     df_ft = get_ft(eq, avg, task_set, data_path)
-    plot_fft(axins_, df_ft, half = True)
+    plot_fft(axins_, df_ft, color = colors[9 - i], half = True)
     df_freq = get_freq(df_ft)
     
 add_1_npi(axins_, n = 3)
@@ -203,9 +203,9 @@ pu.add_caption_letter(axi, "(c)")
 ###### ###### ######
  ###### SAVE ######
 ###### ###### ######
-fig.legend(handles, labels, bbox_to_anchor = (0.9, 1.1), ncol = 7)
+fig.legend(handles, labels, bbox_to_anchor = (0.95, 1.1), ncol = 8)
 fig.tight_layout()
 
-fig.savefig("outs/fig2_.png", dpi = 200)
-fig.savefig("outs/fig2_500dpi_.png", dpi = 500)
-fig.savefig("outs/fig2_1000dpi_.png", dpi = 1000)
+fig.savefig("outs/fig2_fix.png", dpi = 200)
+#fig.savefig("outs/fig2_500dpi_h001.png", dpi = 500)
+#fig.savefig("outs/fig2_1000dpi_h001.png", dpi = 1000)
