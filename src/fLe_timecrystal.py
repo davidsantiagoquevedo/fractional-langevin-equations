@@ -58,10 +58,10 @@ class fle():
             else:
                 t_alpha = 1
                 
-            self.T1_t = T1*t_alpha*np.sin(alpha*np.pi/2)
+            self.T1_t = T1#*t_alpha*np.sin(alpha*np.pi/2)
             T1_t = self.T1_t
             
-            self.theta_1 = np.sqrt(2*kB*T1_t*eta_1)
+            self.theta_1 = np.sqrt(2*kB*T1_t*t_alpha*eta_1)
             self.theta_2 = np.sqrt(kB*T2*eta_2)
             
         if v0 == 0: #static
@@ -74,12 +74,14 @@ class fle():
                 T_eq = T2
                 self.v02 = self.kB*T_eq/M
             else:
-                if eta_2 == 0:
-                    T1_t = self.T1_t
-                    self.v02 = self.kB*T1_t/M
-                else:
-                    T_eq = T2
-                    self.v02 = self.kB*T_eq/M
+                #if eta_2 == 0:
+                #    T1_t = self.T1_t
+                #    self.v02 = self.kB*T1_t/M
+                #else:
+                #    T_eq = T2
+                #    self.v02 = self.kB*T_eq/M
+                T_eq = T2
+                self.v02 = self.kB*T_eq/M
             
             self.v0 = np.sqrt(self.v02)
             
