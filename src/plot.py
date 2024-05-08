@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 from scipy import fftpack
 from scipy.signal import find_peaks
+from tqdm import tqdm
 import matplotlib.ticker as tck
 
 def plot_position(eq, 
@@ -29,7 +30,7 @@ def plot_position(eq,
                 
     ax.legend()
     
-def numeric_msd(eq, avg, task_set, data_path):
+def numeric_msd(eq, avg, task_set, data_path, bootstrap = False, percentiles=[0.01,0.99], num_bootstrap_samples = 1000):
     T = eq.T
     h = eq.h
     v0 = eq.v0_in
@@ -51,9 +52,33 @@ def numeric_msd(eq, avg, task_set, data_path):
             df_temp = ut.read_hdf5_data(data_path + f + ".hdf5")
             df_temp = df_temp.set_index("t")
             df_trj = pd.concat([df_trj, df_temp], axis = 1)
-    msd = fbs.msd(df_trj, False).reset_index()
-    msd.columns = ["t", "msd"]
-    return msd
+    
+    msd = fbs.msd(df_trj, False)
+    if bootstrap:
+        for i in tqdm(range(num_bootstrap_samples)):
+            # Randomly sample rows from the DataFrame with replacement
+            columns_sampled = np.random.choice(df_trj.columns, size=int(len(df_trj.columns)*0.6), replace=True)
+            df_sampled = df_trj[columns_sampled]
+            # Compute mean squared displacement for the bootstrap sample
+            msd = fbs.msd(df_sampled, normalize = False)
+            if i == 0:
+                df_msd_bootstrap = pd.DataFrame({f"sample_{i}" : np.array(msd)})   
+            else:
+                df_temp = pd.DataFrame({f"sample_{i}" : np.array(msd)})
+                df_msd_bootstrap = pd.concat([df_msd_bootstrap, df_temp], axis = 1)
+
+        lower = df_msd_bootstrap.quantile(percentiles[0],axis=1)
+        upper = df_msd_bootstrap.quantile(percentiles[1],axis=1)
+    else:
+        lower = [0]*len(np.array(msd))
+        upper = [0]*len(np.array(msd))
+        
+    numeric_msd = pd.DataFrame({"t" : np.array(df_trj.index),
+                                "msd" : np.array(msd),
+                                "lower" : np.array(lower),
+                                "upper" : np.array(upper)})
+    
+    return numeric_msd
 
 def plot_msd(eq, avg, task_set, data_path,
              ax, color_fd, color_a = "black",
