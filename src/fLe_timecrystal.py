@@ -74,12 +74,12 @@ class fle():
                 T_eq = T2
                 self.v02 = self.kB*T_eq/M
             else:
-                #if eta_2 == 0:
-                #    T1_t = self.T1_t
-                #    self.v02 = self.kB*T1_t/M
-                #else:
-                #    T_eq = T2
-                #    self.v02 = self.kB*T_eq/M
+                if eta_2 == 0:
+                    T1_t = self.T1_t
+                    self.v02 = 0 #self.kB*T1_t/M
+                else:
+                    T_eq = T2
+                    self.v02 = self.kB*T_eq/M
                 T_eq = T2
                 self.v02 = self.kB*T_eq/M
             
