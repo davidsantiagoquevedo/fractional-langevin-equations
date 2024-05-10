@@ -76,7 +76,7 @@ class fle():
             else:
                 if eta_2 == 0:
                     T1_t = self.T1_t
-                    self.v02 = 0 #self.kB*T1_t/M
+                    self.v02 = self.kB*T1_t/M
                 else:
                     T_eq = T2
                     self.v02 = self.kB*T_eq/M
@@ -244,6 +244,7 @@ class fle():
         zeta = self.zeta
         M = self.M
         eta1 = self.eta_1
+        eta2 = self.eta_2
         
         T1_t = self.T1_t
         T2 = self.T2
@@ -264,7 +265,7 @@ class fle():
         self.relaxation_non_linear()
         G2 = self.G*self.G
         z = -(zeta/M)*t**(2-alpha)
-        self.msd = v02 * G2 + 2*kBT1*eta1*int_G2/(M**2) + 2*kBT2/M * ((t**2) * ml.mittag_leffler(z, 2-alpha, 3) - 1/2*G2)
+        self.msd = v02 * G2 + 2*kBT1*eta1*int_G2/(M**2) + 2*kBT2*eta2/(M*(eta2+eta1)) * ((t**2) * ml.mittag_leffler(z, 2-alpha, 3) - 1/2*G2)
         
     def msd_colored(self):
         assert(self.eta_1 == 0 and self.linear == 0)
