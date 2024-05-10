@@ -55,9 +55,10 @@ for a in alpha:
     plot(axi, eq, avg, task_set, data_path, trunc = 15)
     
 #Time glass
+alpha_tg = [0.01, 0.03, 0.05, 0.08, 0.4, 0.8]
 T = 15
 h = 0.005
-v0 = 0.0
+v0 = 1.0
 M = 1.0
 eta_1 = 1.0
 eta_2 = 0.0
@@ -65,7 +66,7 @@ T1 = 1.0
 T2 = 0.0
 linear = 0
 axi = ax[1]
-for a in alpha:
+for a in alpha_tg:
     print(a)
     eq = fle(a, linear)
     eq.params(T = T, h = h,
@@ -97,4 +98,4 @@ for a in alpha:
     plot(axi, eq, avg, task_set, data_path, trunc = 15)
     
 fig.tight_layout()
-fig.savefig("outs/fig2_check.png", dpi = 200)
+fig.savefig("outs/fig2_check_v01_tg.png", dpi = 200)
