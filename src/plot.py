@@ -215,7 +215,10 @@ def plot_check(ax, eq, avg, task_set, data_path, trunc, color):
             eta_1 = eq.eta_1, eta_2 = eq.eta_2,
             T1 = eq.T1, T2 = eq.T2)
     eq_.make_B_H()
-    eq_.msd_non_linear()
+    if eq.linear == 0:
+        eq_.msd_non_linear()
+    else:
+        eq_.msd_linear()
     if all(np.array((numeric.lower == 0))):
         ax.plot(numeric.t, numeric.msd, label = r"$\alpha$ = "+str(eq.alpha))
     else:
