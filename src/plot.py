@@ -17,7 +17,7 @@ def plot_position(eq,
                   legend_main = False, legend_second = False):
     eq.make_B_H()
     eq.solve()
-    eq.get_analytical() 
+    eq.analytical_linear() 
     
     if legend_main:
         ax.plot(eq.t, eq.numerical, ls = "-", color = color_fd, label = r"$\alpha$ ="+str(eq.alpha))
@@ -81,31 +81,38 @@ def numeric_msd(eq, avg, task_set, data_path, bootstrap = False, percentiles=[0.
     return numeric_msd
 
 def plot_msd(eq, avg, task_set, data_path,
-             ax, color_fd, color_a = "black",
+             ax, color_fd, color_a = "black", bootstrap = False,
              legend_main = False, legend_second = False, **kwargs):
-    numeric = numeric_msd(eq, avg, task_set, data_path)
+    numeric = numeric_msd(eq, avg, task_set, data_path, bootstrap = bootstrap)
     if "truncate" in kwargs:
         numeric = numeric[numeric.t <= kwargs["truncate"]]
     if legend_main:
-        numeric.set_index("t").msd.plot(ax = ax, ls = "-", color = color_fd, label = r"$\alpha$ ="+str(eq.alpha))
+        ax.plot(numeric.t, numeric.msd, ls = "-", color = color_fd, label = r"$\alpha$ ="+str(eq.alpha))
+        if bootstrap:
+            ax.fill_between(numeric.t, numeric.lower, numeric.upper, alpha = .4, color = color_fd)            
     else:
-        numeric.set_index("t").msd.plot(ax = ax, ls = "-", color = color_fd, label = "")
-    try:
-        print("Computing analytical....")
-        if kwargs["analytical"]:
-            eq_ = fle(eq.alpha, eq.linear)
-            eq_.params(T = kwargs["T"], h = kwargs["h"],
-            v0 = 0, M = eq.M,
-            eta_1 = eq.eta_1, eta_2 = eq.eta_2,
-            T1 = eq.T1, T2 = eq.T2)
-            eq_.make_B_H()
-            eq_.get_analytical_msd()
-            if legend_second:
-                ax.plot(eq_.t, eq_.analytical_msd, ls = ":", color = color_a, label = "Analytical")
-            else:
-                ax.plot(eq_.t, eq_.analytical_msd, ls = ":", color = color_a, label = "")
-    except:
-        print("No analytical solution")
+        ax.plot(numeric.t, numeric.msd, ls = "-", color = color_fd, label = "")
+    ax.set_xlim(xmin = eq.h)
+    #try:
+    print("Computing analytical....")
+    if kwargs["analytical"]:
+        eq_ = fle(eq.alpha, eq.linear)
+        eq_.params(T = kwargs["T"], h = kwargs["h"],
+        v0 = eq.v0, M = eq.M,
+        eta_1 = eq.eta_1, eta_2 = eq.eta_2,
+        T1 = eq.T1, T2 = eq.T2)
+        eq_.make_B_H()
+        if eq_.linear == 1:
+            eq_.msd_linear()
+        else:
+            eq_.msd_non_linear()
+        if legend_second:
+            ax.plot(eq_.t, eq_.msd, ls = ":", color = color_a, label = "Analytical")
+        else:
+            ax.plot(eq_.t, eq_.msd, ls = ":", color = color_a, label = "")
+        ax.set_xlim(xmin = kwargs["h"])
+    #except:
+    #    print("No analytical solution")
     ax.legend()
     
 def add_trend(ax, x0, xf, func, text = "", xtext = False, dx = 0, dy = 0, **kwargs):
