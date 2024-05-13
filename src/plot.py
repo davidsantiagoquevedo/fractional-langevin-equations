@@ -226,5 +226,5 @@ def plot_check(ax, eq, avg, task_set, data_path, trunc, color):
         ax.fill_between(numeric.t, numeric.lower, numeric.upper, alpha = .4, color = color)
     
     ax.plot(eq_.t, eq_.msd, label = "", color = "black", ls = ":")
-    ax.set_xlim(xmin = eq.h)
+    ax.set_xlim(xmin = eq_.h)
     ax.legend()
