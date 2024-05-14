@@ -30,7 +30,7 @@ def plot_position(eq,
                 
     ax.legend()
     
-def numeric_msd(eq, avg, task_set, data_path, bootstrap = False, percentiles=[0.01,0.99], num_bootstrap_samples = 1000):
+def numeric_msd(eq, avg, task_set, data_path, bootstrap = False, percentiles=[0.005,0.995], num_bootstrap_samples = 1000):
     T = eq.T
     h = eq.h
     v0 = eq.v0_in
