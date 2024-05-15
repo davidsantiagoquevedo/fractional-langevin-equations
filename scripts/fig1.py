@@ -1,6 +1,5 @@
 import sys
 import matplotlib.pyplot as plt
-from tqdm import tqdm
 
 sys.path.append("src/")
 
@@ -71,10 +70,10 @@ for i, a in enumerate(alpha):
         legend_anl = True
     else: 
         legend_anl = False
-    # Main plot: anlytical + numeric + bootstrap
+    # Main plot: anlytical + numeric + ci_normal
     plot_msd(eq = eq, avg = avg, task_set = task_set, data_path = data_path, 
              ax = axi, color_fd = colors[9 - i], analytical = True, T = 15, h = 0.05,
-             legend_main = True, legend_second = legend_anl, bootstrap = True)
+             legend_main = True, legend_second = legend_anl, ci_normal = True)
 
 axi.set_ylabel("MSD " r"$\langle x^2 (t) \rangle$")
 axi.set_xlabel("Time "+"$t$")
@@ -107,10 +106,10 @@ for i, a in enumerate(alpha):
         legend_anl = True
     else: 
         legend_anl = False
-    # Main plot: anlytical + numeric + bootstrap
+    # Main plot: anlytical + numeric + ci_normal
     plot_msd(eq = eq, avg = avg, task_set = task_set, data_path = data_path, 
              ax = axi, color_fd = colors[9 - i], analytical = True, T = 15, h = 0.05,
-             legend_main = True, legend_second = legend_anl, bootstrap = True)
+             legend_main = True, legend_second = legend_anl, ci_normal = True)
 
 
 axi.set_ylabel("MSD " r"$\langle x^2 (t) \rangle$")
@@ -142,7 +141,7 @@ for i, a in enumerate(alpha):
               eta_1 = eta_1, eta_2 = eta_2,
               T1 = T1, T2 = T2)
     plot_msd(eq = eq, avg = avg, task_set = task_set, data_path = data_path, 
-             ax = axi, color_fd = colors[9 - i], bootstrap = True, analytical = False)
+             ax = axi, color_fd = colors[9 - i], ci_normal = True, analytical = False)
     if i == 0:
         add_trend(axi, x0 = 1, xf = T, func = talpha, text = r"$~t^{\alpha}$", xtext = 3, dy = -0.7, alpha = a)
     else:
