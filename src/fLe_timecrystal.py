@@ -80,8 +80,6 @@ class fle():
                 else:
                     T_eq = T2
                     self.v02 = self.kB*T_eq/M
-                T_eq = T2
-                self.v02 = self.kB*T_eq/M
             
             self.v0 = np.sqrt(self.v02)
             
