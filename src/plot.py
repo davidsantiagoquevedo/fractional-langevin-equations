@@ -115,7 +115,7 @@ def plot_msd(eq, avg, task_set, data_path,
     #    print("No analytical solution")
     ax.legend()
     
-def add_trend(ax, x0, xf, func, text = "", xtext = False, dx = 0, dy = 0, **kwargs):
+def add_trend(ax, x0, xf, func, text = "", xtext = False, dx = 0, dy = 0, fontsize = 15, **kwargs):
     t = np.arange(x0,xf,0.01)
     if xtext:
         xloc = xtext
@@ -126,7 +126,7 @@ def add_trend(ax, x0, xf, func, text = "", xtext = False, dx = 0, dy = 0, **kwar
         ax.text(xloc + dx, func(xloc, alpha = kwargs["alpha"]) + dy, text)
     else:
         ax.plot(t, func(t), color = "black", alpha = 0.5, ls = ":")
-        ax.text(xloc + dx, func(xloc) + dy, text)
+        ax.text(xloc + dx, func(xloc) + dy, text, fontsize = fontsize)
 
 def t(t):
     return t
@@ -198,16 +198,13 @@ def plot_fft(ax, ft, color, half = True):
 def add_1_npi(ax, n = 1):
     if n == 1:
         label = r"$\frac{1}{\pi}$"
-        pos = 0.45
     if n == 2:
         label = r"$\frac{1}{2\pi}$"
-        pos = 0.17
     if n == 3:
         n = np.sqrt(2)
         label = r"$\frac{\sqrt{2}}{2\pi}$"
-        pos = 0.25
     ax.axvline(x = 1/(n*np.pi), color = "black", alpha = 0.3, ls = ":")
-    ax.text(pos, 0.1, label, transform=ax.transAxes)
+    ax.text(1/(n*np.pi), 0.1, label, transform=ax.transAxes)
 
 #### #### #### ##### #### #### ####
 #### FUNCTION TO CHECK RESULTS ####
