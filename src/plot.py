@@ -30,7 +30,7 @@ def plot_position(eq,
                 
     ax.legend()
     
-def numeric_msd(eq, avg, task_set, data_path, bootstrap = False, percentiles=[0.005,0.995], num_bootstrap_samples = 1000):
+def numeric_msd(eq, avg, task_set, data_path, ci_normal = False, bootstrap = False, percentiles=[0.005,0.995], num_bootstrap_samples = 1000):
     T = eq.T
     h = eq.h
     v0 = eq.v0_in
@@ -69,9 +69,16 @@ def numeric_msd(eq, avg, task_set, data_path, bootstrap = False, percentiles=[0.
 
         lower = df_msd_bootstrap.quantile(percentiles[0],axis=1)
         upper = df_msd_bootstrap.quantile(percentiles[1],axis=1)
+        
+    elif ci_normal:
+        std = (df_trj**2).std(axis = 1)
+        N = len(df_trj.columns)
+        lower = msd - 2.33*std/np.sqrt(N)
+        upper = msd + 2.33*std/np.sqrt(N)
     else:
         lower = [0]*len(np.array(msd))
         upper = [0]*len(np.array(msd))
+        
         
     numeric_msd = pd.DataFrame({"t" : np.array(df_trj.index),
                                 "msd" : np.array(msd),
@@ -81,14 +88,14 @@ def numeric_msd(eq, avg, task_set, data_path, bootstrap = False, percentiles=[0.
     return numeric_msd
 
 def plot_msd(eq, avg, task_set, data_path,
-             ax, color_fd, color_a = "black", bootstrap = False,
+             ax, color_fd, color_a = "black", ci_normal = False, bootstrap = False,
              legend_main = False, legend_second = False, **kwargs):
-    numeric = numeric_msd(eq, avg, task_set, data_path, bootstrap = bootstrap)
+    numeric = numeric_msd(eq, avg, task_set, data_path, ci_normal = ci_normal, bootstrap = bootstrap)
     if "truncate" in kwargs:
         numeric = numeric[numeric.t <= kwargs["truncate"]]
     if legend_main:
         ax.plot(numeric.t, numeric.msd, ls = "-", color = color_fd, label = r"$\alpha$ ="+str(eq.alpha))
-        if bootstrap:
+        if (bootstrap or ci_normal):
             ax.fill_between(numeric.t, numeric.lower, numeric.upper, alpha = .4, color = color_fd)            
     else:
         ax.plot(numeric.t, numeric.msd, ls = "-", color = color_fd, label = "")
@@ -159,15 +166,30 @@ def add_perio_grid(ax, freq, T, times = 8):
     ax.xaxis.set_major_locator(tck.MultipleLocator(base = times*np.pi))
     
     
-def get_ft(eq, avg, task_set, data_path):
-    numeric = numeric_msd(eq, avg, task_set, data_path)
-    h = eq.h
-    T = eq.T
+def get_ft(eq, avg, task_set, data_path, analytical = False, **kwargs):
+    if analytical:
+        eq_ = fle(eq.alpha, eq.linear)
+        eq_.params(T = eq.T, h = kwargs["h"],
+        v0 = eq.v0, M = eq.M,
+        eta_1 = eq.eta_1, eta_2 = eq.eta_2,
+        T1 = eq.T1, T2 = eq.T2)
+        eq_.make_B_H()
+        if eq_.linear == 1:
+            eq_.msd_linear()
+        else:
+            eq_.msd_non_linear()
+        data = eq_.msd
+        h = eq_.h
+        T = eq_.T
+    else:
+        data = numeric_msd(eq, avg, task_set, data_path).msd
+        h = eq.h
+        T = eq.T
     Fs = 1/h #sampling rate
     n = int(T/h) #number of observations
     
     df_fft = pd.DataFrame()
-    df_fft["fft"] = fftpack.fft(np.array(numeric.msd))
+    df_fft["fft"] = fftpack.fft(np.array(data))
     df_fft["A"] = df_fft["fft"].abs()
     df_fft["fr"] = Fs/n * np.linspace(0,n,int(n))
     
@@ -204,7 +226,7 @@ def add_1_npi(ax, n = 1):
         n = np.sqrt(2)
         label = r"$\frac{\sqrt{2}}{2\pi}$"
     ax.axvline(x = 1/(n*np.pi), color = "black", alpha = 0.3, ls = ":")
-    ax.text(1/(n*np.pi), 0.1, label, transform=ax.transAxes)
+    ax.text(1/(n*np.pi), 1/(n*np.pi), label, transform=ax.transAxes)
 
 #### #### #### ##### #### #### ####
 #### FUNCTION TO CHECK RESULTS ####
