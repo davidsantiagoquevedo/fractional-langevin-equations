@@ -28,7 +28,7 @@ def add_axislabel_ins(axins, axi, x_text = "Freq. "+ r"$(1/t)$", y_text = "Amp."
  ################ TIME CRYSTAL #################
 #################################################
 axi = ax[0]
-axins = axi.inset_axes([0.6, 0.1, 0.37, 0.37])
+axins = axi.inset_axes([0.59, 0.1, 0.37, 0.37])
 axins_ = axi.inset_axes([0.0, 1.17, 1.0, 0.4])
 
 T = 15
@@ -91,14 +91,14 @@ handles, labels = axins.get_legend_handles_labels()
 axins.get_legend().remove()
 
 pu.add_caption_letter(axi, "(a)")
-pu.add_caption_letter(axins_, "(a-i)", fontsize = 15)
+pu.add_caption_letter(axins_, "(a-i)", fontsize = 13)
 
 #################################################
  ################ TIME GLASS #################
 #################################################
 
 axi = ax[1]
-axins = axi.inset_axes([0.6, 0.1, 0.37, 0.37])
+axins = axi.inset_axes([0.59, 0.1, 0.37, 0.37])
 axins_ = axi.inset_axes([0.0, 1.17, 1.0, 0.4])
 
 T = 15
@@ -161,14 +161,14 @@ handles, labels = axins.get_legend_handles_labels()
 axins.get_legend().remove()
 
 pu.add_caption_letter(axi, "(b)")
-pu.add_caption_letter(axins_, "(b-i)", fontsize = 12)
+pu.add_caption_letter(axins_, "(b-i)", fontsize = 13)
 
 #################################################
  ################ MIXED PHASE #################
 #################################################
 
 axi = ax[2]
-axins = axi.inset_axes([0.6, 0.1, 0.37, 0.37])
+axins = axi.inset_axes([0.59, 0.1, 0.37, 0.37])
 axins_ = axi.inset_axes([0.0, 1.17, 1.0, 0.4])
 
 T = 15
@@ -231,7 +231,7 @@ handles, labels = axins.get_legend_handles_labels()
 axins.get_legend().remove()
 
 pu.add_caption_letter(axi, "(c)")
-pu.add_caption_letter(axins_, "(c-i)", fontsize = 15)
+pu.add_caption_letter(axins_, "(c-i)", fontsize = 13)
 
 ###### ###### ######
  ###### SAVE ######
