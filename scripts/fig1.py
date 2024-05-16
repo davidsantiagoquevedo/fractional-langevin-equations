@@ -12,6 +12,7 @@ data_path = "_raw/time_crystal/"
 colors = plt.rcParams["axes.prop_cycle"].by_key()["color"]
 fig, ax = plt.subplots(2,2, figsize=(10, 10), sharex = False);
 avg = 4000
+h_anl = 0.1
 task_set = ["002", "003", "004", "005"]
 
 alpha = [0.05, 0.1, 0.3, 0.5, 0.7, 0.9]
@@ -72,7 +73,7 @@ for i, a in enumerate(alpha):
         legend_anl = False
     # Main plot: anlytical + numeric + ci_normal
     plot_msd(eq = eq, avg = avg, task_set = task_set, data_path = data_path, 
-             ax = axi, color_fd = colors[9 - i], analytical = True, T = 15, h = 0.05,
+             ax = axi, color_fd = colors[9 - i], analytical = True, T = 15, h = h_anl,
              legend_main = True, legend_second = legend_anl, ci_normal = True)
 
 axi.set_ylabel("MSD " r"$\langle x^2 (t) \rangle$")
@@ -108,7 +109,7 @@ for i, a in enumerate(alpha):
         legend_anl = False
     # Main plot: anlytical + numeric + ci_normal
     plot_msd(eq = eq, avg = avg, task_set = task_set, data_path = data_path, 
-             ax = axi, color_fd = colors[9 - i], analytical = True, T = 15, h = 0.05,
+             ax = axi, color_fd = colors[9 - i], analytical = True, T = 15, h = h_anl,
              legend_main = True, legend_second = legend_anl, ci_normal = True)
 
 
