@@ -11,9 +11,9 @@ from plot import *
 plt.style.use("analysis/plot_style.mplstyle")
 data_path = "_raw/time_crystal/"
 colors = plt.rcParams["axes.prop_cycle"].by_key()["color"]
-fig, ax = plt.subplots(1,3, figsize=(15, 5), sharex = False, sharey = False);
+fig, ax = plt.subplots(2,3, figsize=(15, 10), sharex = False, sharey = False);
 avg = 4000
-task_set = ["002", "003", "004", "005"]
+task_set = ["002"]
 h_anl =0.1
 
 alpha = [0.01, 0.03, 0.05, 0.07, 0.09, 0.1]
@@ -27,9 +27,10 @@ def add_axislabel_ins(axins, axi, x_text = "Freq. "+ r"$(1/t)$", y_text = "Amp."
 #################################################
  ################ TIME CRYSTAL #################
 #################################################
-axi = ax[0]
-axins = axi.inset_axes([0.59, 0.1, 0.37, 0.37])
-axins_ = axi.inset_axes([0.0, 1.17, 1.0, 0.4])
+axi = ax[0][0]
+axins = ax[1][0]
+axins_ = axi.inset_axes([0.59, 0.15, 0.37, 0.37])
+#axins_ = axi.inset_axes([0.0, 1.17, 1.0, 0.4])
 
 T = 15
 h = 0.005
@@ -68,7 +69,6 @@ for i, a in enumerate(alpha):
     df_freq = get_freq(df_ft)
     
 add_1_npi(axins_, n = 2)
-pu.resize_names(axins)
 pu.resize_names(axins_)
 
 add_trend(axi, x0 = h, xf = 15, func = t, text = "~t", xtext = 0.01)
@@ -83,6 +83,10 @@ axins_.set_yscale("log")
 
 axi.set_ylabel("MSD " r"$\langle x^2 (t) \rangle$")
 axi.set_xlabel("Time "+"$t$")
+
+axins.set_ylabel("MSD " r"$\langle x^2 (t) \rangle$")
+axins.set_xlabel("Time "+"$t$")
+
 axins_.set_ylabel("FFT - Amplitude ")
 axins_.set_xlabel("Freq. "+ r"$(1/t)$")
 
@@ -91,15 +95,16 @@ handles, labels = axins.get_legend_handles_labels()
 axins.get_legend().remove()
 
 pu.add_caption_letter(axi, "(a)")
-pu.add_caption_letter(axins_, "(a-i)", fontsize = 13)
+pu.add_caption_letter(axins, "(d)")
 
 #################################################
  ################ TIME GLASS #################
 #################################################
 
-axi = ax[1]
-axins = axi.inset_axes([0.59, 0.1, 0.37, 0.37])
-axins_ = axi.inset_axes([0.0, 1.17, 1.0, 0.4])
+axi = ax[0][1]
+axins = ax[1][1]
+axins_ = axi.inset_axes([0.59, 0.15, 0.37, 0.37])
+#axins_ = axi.inset_axes([0.0, 1.17, 1.0, 0.4])
 
 T = 15
 h = 0.005
@@ -138,7 +143,6 @@ for i, a in enumerate(alpha):
     df_freq = get_freq(df_ft)
     
 add_1_npi(axins_, n = 1)
-pu.resize_names(axins)
 pu.resize_names(axins_)
 
 add_trend(axi, x0 = h, xf = 15, func = t, text = "~t", xtext = 0.01)
@@ -153,6 +157,10 @@ axins_.set_yscale("log")
 
 axi.set_ylabel("MSD " r"$\langle x^2 (t) \rangle$")
 axi.set_xlabel("Time "+"$t$")
+
+axins.set_ylabel("MSD " r"$\langle x^2 (t) \rangle$")
+axins.set_xlabel("Time "+"$t$")
+
 axins_.set_ylabel("FFT - Amplitude ")
 axins_.set_xlabel("Freq. "+ r"$(1/t)$")
 
@@ -161,15 +169,16 @@ handles, labels = axins.get_legend_handles_labels()
 axins.get_legend().remove()
 
 pu.add_caption_letter(axi, "(b)")
-pu.add_caption_letter(axins_, "(b-i)", fontsize = 13)
+pu.add_caption_letter(axins, "(e)")
 
 #################################################
  ################ MIXED PHASE #################
 #################################################
 
-axi = ax[2]
-axins = axi.inset_axes([0.59, 0.1, 0.37, 0.37])
-axins_ = axi.inset_axes([0.0, 1.17, 1.0, 0.4])
+axi = ax[0][2]
+axins = ax[1][2]
+axins_ = axi.inset_axes([0.59, 0.15, 0.37, 0.37])
+#axins_ = axi.inset_axes([0.0, 1.17, 1.0, 0.4])
 
 T = 15
 h = 0.005
@@ -208,7 +217,6 @@ for i, a in enumerate(alpha):
     df_freq = get_freq(df_ft)
     
 add_1_npi(axins_, n = 3)
-pu.resize_names(axins)
 pu.resize_names(axins_)
 
 add_trend(axi, x0 = h, xf = 15, func = t, text = "~t", xtext = 0.01)
@@ -223,6 +231,10 @@ axins_.set_yscale("log")
 
 axi.set_ylabel("MSD " r"$\langle x^2 (t) \rangle$")
 axi.set_xlabel("Time "+"$t$")
+
+axins.set_ylabel("MSD " r"$\langle x^2 (t) \rangle$")
+axins.set_xlabel("Time "+"$t$")
+
 axins_.set_ylabel("FFT - Amplitude ")
 axins_.set_xlabel("Freq. "+ r"$(1/t)$")
 
@@ -231,12 +243,12 @@ handles, labels = axins.get_legend_handles_labels()
 axins.get_legend().remove()
 
 pu.add_caption_letter(axi, "(c)")
-pu.add_caption_letter(axins_, "(c-i)", fontsize = 13)
+pu.add_caption_letter(axins, "(f)")
 
 ###### ###### ######
  ###### SAVE ######
 ###### ###### ######
-fig.legend(handles, labels, bbox_to_anchor = (0.95, 1.2), ncol = 8)
+fig.legend(handles, labels, bbox_to_anchor = (0.95, 1.07), ncol = 8)
 fig.tight_layout()
 
 fig.savefig("outs/fig2_layout2.png", dpi = 100)
