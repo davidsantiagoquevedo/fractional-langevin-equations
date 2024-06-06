@@ -1,5 +1,6 @@
 import sys
 import matplotlib.pyplot as plt
+import numpy as np
 from tqdm import tqdm
 
 sys.path.append("src/")
@@ -15,7 +16,7 @@ fig, ax = plt.subplots(2,3, figsize=(15, 10), sharex = False, sharey = False);
 avg = 4000
 task_set = ["002"]
 h_anl =0.1
-T_trunc =  20
+T_trunc =  np.pi*8
 alpha = [0.01, 0.03, 0.05, 0.07, 0.09, 0.1]
 
    
