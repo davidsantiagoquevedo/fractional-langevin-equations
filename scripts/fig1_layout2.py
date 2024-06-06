@@ -124,7 +124,7 @@ pu.add_caption_letter(axi, "(c)")
 print("Plot (d)")
 axins = axi.inset_axes([0.10, 0.53, 0.37, 0.37])
 
-T = 15
+T = 100
 h = 0.01
 v0 = 1.0
 M = 1.0
@@ -162,4 +162,4 @@ pu.resize_names(axins)
 fig.legend(handles, labels, bbox_to_anchor = (0.95, 1.03), ncol = 8)
 fig.tight_layout()
 
-fig.savefig("outs/fig1_layout2.png", dpi = 100)
+fig.savefig("outs/fig1_layout2_lt.png", dpi = 100)
