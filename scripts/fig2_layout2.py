@@ -106,7 +106,7 @@ axins = ax[1][1]
 axins_ = axi.inset_axes([0.59, 0.15, 0.37, 0.37])
 #axins_ = axi.inset_axes([0.0, 1.17, 1.0, 0.4])
 
-T = 15
+T = 100
 h = 0.005
 v0 = 1.0
 M = 1.0
@@ -180,7 +180,7 @@ axins = ax[1][2]
 axins_ = axi.inset_axes([0.59, 0.15, 0.37, 0.37])
 #axins_ = axi.inset_axes([0.0, 1.17, 1.0, 0.4])
 
-T = 15
+T = 100
 h = 0.005
 v0 = 1.0
 M = 1.0
