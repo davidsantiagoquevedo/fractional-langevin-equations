@@ -78,6 +78,7 @@ for i, a in enumerate(alpha):
 
 axi.set_ylabel("MSD " r"$\langle x^2 (t) \rangle$")
 axi.set_xlabel("Time "+"$t$")
+axi.set_ylim(ymax = 14)
 axi.get_legend().remove()
 
 pu.add_caption_letter(axi, "(b)")
@@ -115,7 +116,7 @@ for i, a in enumerate(alpha):
 
 axi.set_ylabel("MSD " r"$\langle x^2 (t) \rangle$")
 axi.set_xlabel("Time "+"$t$")
-
+axi.set_ylim(ymax = 14)
 handles, labels = axi.get_legend_handles_labels()
 axi.get_legend().remove()
 pu.add_caption_letter(axi, "(c)")
@@ -162,4 +163,6 @@ pu.resize_names(axins)
 fig.legend(handles, labels, bbox_to_anchor = (0.95, 1.03), ncol = 8)
 fig.tight_layout()
 
-fig.savefig("outs/fig1_layout2_lt.png", dpi = 100)
+fig.savefig("outs/fig1_layout2_lt_100.png", dpi = 100)
+fig.savefig("outs/fig1_layout2_lt_200.png", dpi = 200)
+fig.savefig("outs/fig1_layout2_lt_500.png", dpi = 500)
