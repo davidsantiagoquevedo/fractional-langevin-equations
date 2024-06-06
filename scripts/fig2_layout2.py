@@ -15,7 +15,7 @@ fig, ax = plt.subplots(2,3, figsize=(15, 10), sharex = False, sharey = False);
 avg = 4000
 task_set = ["002"]
 h_anl =0.1
-
+T_trunc =  20
 alpha = [0.01, 0.03, 0.05, 0.07, 0.09, 0.1]
 
    
@@ -32,7 +32,7 @@ axins = ax[1][0]
 axins_ = axi.inset_axes([0.59, 0.15, 0.37, 0.37])
 #axins_ = axi.inset_axes([0.0, 1.17, 1.0, 0.4])
 
-T = 15
+T = 100
 h = 0.005
 v0 = 1.0
 M = 1.0
@@ -54,8 +54,8 @@ for i, a in enumerate(alpha):
     else: 
         legend_anl = False
     plot_msd(eq = eq, avg = avg, task_set = task_set, data_path = data_path, 
-             ax = axins, color_fd = colors[9 - i], analytical = True, T = 15, h = h_anl, 
-             legend_main = True, legend_second = legend_anl, ci_normal = True)
+             ax = axins, color_fd = colors[9 - i], analytical = True, T = T_trunc, h = h_anl, 
+             legend_main = True, legend_second = legend_anl, ci_normal = True, truncate = T_trunc)
     plot_msd(eq = eq, avg = avg, task_set = task_set, data_path = data_path, 
              ax = axi, color_fd = colors[9 - i], analytical = False,
              legend_main = False)
@@ -71,10 +71,10 @@ for i, a in enumerate(alpha):
 add_1_npi(axins_, n = 2)
 pu.resize_names(axins_)
 
-add_trend(axi, x0 = h, xf = 15, func = t, text = "~t", xtext = 0.01)
+add_trend(axi, x0 = h, xf = T, func = t, text = "~t", xtext = 0.01)
 add_trend(axi, x0 = h, xf = 1, func = t2, text = "~t²", xtext = 0.01)
 add_trend(axi, x0 = h, xf = 1, func = t3, text = "~t³", xtext = 0.01)
-add_perio_grid(axins, 1/np.pi, 15, times = 1)
+add_perio_grid(axins, 1/np.pi, T_trunc, times = 1)
 
 axi.set_xscale("log")
 axi.set_yscale("log")
@@ -95,7 +95,7 @@ handles, labels = axins.get_legend_handles_labels()
 axins.get_legend().remove()
 
 pu.add_caption_letter(axi, "(a)")
-pu.add_caption_letter(axins, "(d)")
+pu.add_caption_letter(axins, "(b)")
 
 #################################################
  ################ TIME GLASS #################
@@ -128,8 +128,8 @@ for i, a in enumerate(alpha):
     else: 
         legend_anl = False
     plot_msd(eq = eq, avg = avg, task_set = task_set, data_path = data_path, 
-             ax = axins, color_fd = colors[9 - i], analytical = True, T = 15, h = h_anl, 
-             legend_main = True, legend_second = legend_anl, ci_normal = True)
+             ax = axins, color_fd = colors[9 - i], analytical = True, T = T_trunc, h = h_anl, 
+             legend_main = True, legend_second = legend_anl, ci_normal = True, truncate = T_trunc)
     plot_msd(eq = eq, avg = avg, task_set = task_set, data_path = data_path, 
              ax = axi, color_fd = colors[9 - i], analytical = False,
              legend_main = False)
@@ -145,10 +145,10 @@ for i, a in enumerate(alpha):
 add_1_npi(axins_, n = 1)
 pu.resize_names(axins_)
 
-add_trend(axi, x0 = h, xf = 15, func = t, text = "~t", xtext = 0.01)
+add_trend(axi, x0 = h, xf = T, func = t, text = "~t", xtext = 0.01)
 add_trend(axi, x0 = h, xf = 1, func = t2, text = "~t²", xtext = 0.01)
 add_trend(axi, x0 = h, xf = 1, func = t3, text = "~t³", xtext = 0.01)
-add_perio_grid(axins, 1/np.pi, 15, times = 1)
+add_perio_grid(axins, 1/np.pi, T_trunc, times = 1)
 
 axi.set_xscale("log")
 axi.set_yscale("log")
@@ -168,8 +168,8 @@ axins_.set_xlabel("Freq. "+ r"$(1/t)$")
 handles, labels = axins.get_legend_handles_labels()
 axins.get_legend().remove()
 
-pu.add_caption_letter(axi, "(b)")
-pu.add_caption_letter(axins, "(e)")
+pu.add_caption_letter(axi, "(c)")
+pu.add_caption_letter(axins, "(d)")
 
 #################################################
  ################ MIXED PHASE #################
@@ -202,8 +202,8 @@ for i, a in enumerate(alpha):
     else: 
         legend_anl = False
     plot_msd(eq = eq, avg = avg, task_set = task_set, data_path = data_path, 
-             ax = axins, color_fd = colors[9 - i], analytical = True, T = 15, h = h_anl, 
-             legend_main = True, legend_second = legend_anl, ci_normal = True)
+             ax = axins, color_fd = colors[9 - i], analytical = True, T = T_trunc, h = h_anl, 
+             legend_main = True, legend_second = legend_anl, ci_normal = True, truncate = T_trunc)
     plot_msd(eq = eq, avg = avg, task_set = task_set, data_path = data_path, 
              ax = axi, color_fd = colors[9 - i], analytical = False,
              legend_main = False)
@@ -219,10 +219,10 @@ for i, a in enumerate(alpha):
 add_1_npi(axins_, n = 3)
 pu.resize_names(axins_)
 
-add_trend(axi, x0 = h, xf = 15, func = t, text = "~t", xtext = 0.01)
+add_trend(axi, x0 = h, xf = T, func = t, text = "~t", xtext = 0.01)
 add_trend(axi, x0 = h, xf = 1, func = t2, text = "~t²", xtext = 0.01)
 add_trend(axi, x0 = h, xf = 1, func = t3, text = "~t³", xtext = 0.01)
-add_perio_grid(axins, 1/np.pi, 15, times = 1)
+add_perio_grid(axins, 1/np.pi, T_trunc, times = 1)
 
 axi.set_xscale("log")
 axi.set_yscale("log")
@@ -242,7 +242,7 @@ axins_.set_xlabel("Freq. "+ r"$(1/t)$")
 handles, labels = axins.get_legend_handles_labels()
 axins.get_legend().remove()
 
-pu.add_caption_letter(axi, "(c)")
+pu.add_caption_letter(axi, "(e)")
 pu.add_caption_letter(axins, "(f)")
 
 ###### ###### ######
@@ -251,4 +251,4 @@ pu.add_caption_letter(axins, "(f)")
 fig.legend(handles, labels, bbox_to_anchor = (0.95, 1.07), ncol = 8)
 fig.tight_layout()
 
-fig.savefig("outs/fig2_layout2.png", dpi = 100)
+fig.savefig("outs/fig2_layout2_lt.png", dpi = 100)
