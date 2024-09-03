@@ -177,6 +177,28 @@ class fle():
         self.G = G(t)
         self.G_conv_dB = itg.convolution(G, dB, t)
         
+    def corr_v_linear(self):
+        alpha = self.alpha
+        zeta = self.zeta
+        gmma = self.gamma
+        M = self.M
+        
+        t = self.t
+        dB = self.dB
+        
+        def g(t):
+            inf = 40
+            z = -(gmma/M)*t
+            G = pd.DataFrame()
+            for n in range(inf):
+                t_ = ((-zeta/M)**n)*t**((2-alpha)*n)
+                G[f"n{n}"] = ml.prabhakar_mittag_leffler(z, 1 , (2-alpha)* n + 1, n+1) * t_ 
+            
+            return np.array(G.sum(axis = 1))
+                
+        self.corr_v = g(t)
+        
+        
     def analytical_linear(self):
         assert(self.eta_1 != 0 and self.eta_2 != 0 and self.linear == 1)
         M = self.M
@@ -226,6 +248,20 @@ class fle():
         
         self.G = G(t)
         self.G_conv_dB = itg.convolution(G, dB, t)
+        
+    def corr_v_non_linear(self):
+        alpha = self.alpha
+        zeta = self.zeta
+        M = self.M
+        
+        t = self.t
+        dB = self.dB
+        
+        def g(t):
+            z = (-zeta / M) * t**(2 - alpha)
+            return ml.mittag_leffler(z, 2 - alpha, 1)
+        
+        self.corr_v = g(t)
     
     def analytical_non_linear(self):
         assert(self.eta_1 == 0 and self.linear == 0)
